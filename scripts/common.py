@@ -9,6 +9,7 @@ DATA_FILE = ROOT / "data.json"
 
 META_ACCOUNT = "692135214662669"      # IDC executive education
 GOOGLE_ACCOUNT = "521-257-8242"       # FORE אוניברסיטת רייכמן - לימודי חוץ
+LINKEDIN_ACCOUNT = "509671992"        # Reichman University - Executive Education (billed in USD)
 HISTORY_START = date(2026, 1, 1)
 
 _INVISIBLE = re.compile(r"[‎‏‪-‮⁦-⁩﻿]")
@@ -64,6 +65,32 @@ def google_row(r: dict) -> dict:
     }
 
 
+def fx_lookup(rates: dict):
+    """rates: {'YYYY-MM-DD': usd_to_ils}. Returns f(date)->rate, carrying the last known rate forward."""
+    days = sorted(rates)
+
+    def f(d: str) -> float:
+        best = None
+        for k in days:
+            if k <= d:
+                best = rates[k]
+            else:
+                break
+        return best if best is not None else rates[days[0]]
+    return f
+
+
+def linkedin_row(r: dict, fx) -> dict:
+    return {
+        "d": r["date"], "p": "linkedin", "c": clean(r["campaign"]),
+        "i": int(num(r.get("impressions"))),
+        "k": int(num(r.get("clicks"))),
+        # Leads = LinkedIn Lead Gen Form (one-click) leads only
+        "l": int(num(r.get("oneclickleads"))),
+        "s": round(num(r.get("spend")) * fx(r["date"]), 2),
+    }
+
+
 def write_data(as_of: date, rows: list, reach: dict, updated_iso: str) -> None:
     rows = [r for r in rows if r["i"] or r["k"] or r["l"] or r["s"]]
     rows.sort(key=lambda r: (r["d"], r["p"], r["c"]))
@@ -72,8 +99,10 @@ def write_data(as_of: date, rows: list, reach: dict, updated_iso: str) -> None:
         "updated": updated_iso,
         "asOf": as_of.isoformat(),
         "presets": {k: [a.isoformat(), b.isoformat()] for k, (a, b) in pr.items()},
-        "reach": {k: {"total": v["total"], "by": {clean(n): x for n, x in v["by"].items()}}
-                  for k, v in reach.items()},
+        # reach[preset][platform] = {"total": n, "by": {campaign: n}}
+        "reach": {k: {p: {"total": v["total"], "by": {clean(n): x for n, x in v.get("by", {}).items()}}
+                      for p, v in plats.items()}
+                  for k, plats in reach.items()},
         "rows": rows,
     }
     DATA_FILE.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

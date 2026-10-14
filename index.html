@@ -4,145 +4,167 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>FORE · דשבורד מדיה</title>
+<title>FORE · דשבורד מדיה · BRIGHT</title>
+<link rel="icon" href="assets/bright-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f3f5f9; --surface:#ffffff; --surface-2:#f8fafc; --ink:#0d1b2e; --ink-2:#4a5a70; --ink-3:#8593a6;
-  --line:#e4e9f0; --navy:#0b1f3a; --navy-2:#13315c; --accent:#00a3ad; --gold:#c9a24b;
-  --meta:#1877f2; --google:#ea4335; --google-b:#4285f4; --good:#0f9d58; --bad:#d93025;
-  --shadow:0 1px 2px rgba(13,27,46,.04),0 6px 24px rgba(13,27,46,.06); --r:16px;
+  /* BRIGHT palette */
+  --bg:#F4F4F2; --surface:#FFFFFF; --surface-2:#FAFAF8; --ink:#141B34; --mute:#6E6E73; --mute-2:#7A7A72;
+  --hair:#E4E4E0; --hair-2:#ECECE8;
+  --navy:#141B34; --navy-2:#1E2748; --yellow:#FBDD5C; --yellow-soft:#FDF8E6; --yellow-2:#FDF3C7;
+  --good:#1F9D57; --good-bg:#D8F0E2; --bad:#D64545; --bad-bg:#FBE6E6;
+  --c-meta:#141B34; --c-google:#E9B824; --c-linkedin:#5B8DB8; --c-leads:#1F9D57;
+  --shadow:0 1px 0 rgba(20,27,52,.03),0 10px 28px -14px rgba(20,27,52,.18); --r:16px;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:Heebo,system-ui,sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+body{background:var(--bg);color:var(--ink);font-family:Assistant,"Arial Hebrew",Arial,sans-serif;font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
 .num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
 
-/* header */
-header{background:radial-gradient(1200px 400px at 85% -50%,#1d4f86 0,transparent 60%),linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:28px 0 92px}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:14px}
-.logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#2fd1c5);display:grid;place-items:center;font-weight:800;letter-spacing:.5px;font-size:15px;color:var(--navy)}
-.brand h1{margin:0;font-size:24px;font-weight:700}
-.brand p{margin:2px 0 0;color:#b9c7da;font-size:14px}
-.meta-info{text-align:left;color:#b9c7da;font-size:13px}
-.meta-info b{color:#fff;font-weight:500}
+/* masthead */
+.mast{background:var(--navy);color:#E9EAF0;padding:24px 0 98px;position:relative;overflow:hidden}
+.mast::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:var(--yellow)}
+.mast .wrap{position:relative;z-index:1}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.client{display:flex;align-items:center;gap:18px}
+.client-logo{background:#fff;border-radius:14px;padding:10px 16px;display:flex;align-items:center}
+.client-logo img{height:48px;display:block}
+.title .eyebrow{color:var(--yellow);font-size:13px;font-weight:700;letter-spacing:.02em}
+.title h1{font-weight:800;font-size:32px;line-height:1.1;margin:2px 0 0;color:#fff}
+.agency{display:flex;align-items:center;gap:12px}
+.agency img{width:46px;height:46px;border-radius:50%;background:#000;box-shadow:0 0 0 2px var(--yellow)}
+.agency .t{font-size:12.5px;color:#B9BCCB;line-height:1.5}
+.agency .t b{color:#fff;font-weight:700;letter-spacing:.18em;font-size:14px;display:block;direction:ltr;text-align:right}
 
-/* period bar */
-.periods{margin-top:26px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.chip{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#e6edf6;padding:8px 16px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer;transition:.15s}
-.chip:hover{background:rgba(255,255,255,.14)}
-.chip.on{background:#fff;color:var(--navy);border-color:#fff;font-weight:600}
-.custom{display:flex;align-items:center;gap:6px;margin-inline-start:6px;padding:4px 6px 4px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
-.custom.on{background:#fff}
-.custom.on span{color:var(--navy)}
-.custom span{font-size:13px;color:#b9c7da}
+.periods{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid rgba(255,255,255,.2);background:transparent;color:#DDE0EA;padding:8px 17px;border-radius:999px;font:inherit;font-size:14.5px;font-weight:500;cursor:pointer;transition:.15s}
+.chip:hover{border-color:rgba(255,255,255,.5);color:#fff}
+.chip.on{background:var(--yellow);color:var(--navy);border-color:var(--yellow);font-weight:700}
+.custom{display:flex;align-items:center;gap:6px;margin-inline-start:4px;padding:4px 6px 4px 12px;border-radius:999px;border:1px dashed rgba(255,255,255,.3)}
+.custom.on{background:var(--yellow);border:1px solid var(--yellow)}
+.custom span{font-size:13.5px;color:#B9BCCB}
+.custom.on span{color:var(--navy);font-weight:600}
 .custom input{font:inherit;font-size:13px;border:0;border-radius:999px;padding:5px 10px;background:#fff;color:var(--ink)}
-.range{margin-top:14px;color:#b9c7da;font-size:13px}
-.range b{color:#fff;font-weight:500}
+.range{margin-top:14px;color:#B9BCCB;font-size:13.5px}
+.range b{color:#fff;font-weight:600}
 
-main{margin-top:-64px;padding-bottom:48px}
-.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+main{margin-top:-60px;padding-bottom:56px;position:relative;z-index:2}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--hair)}
 
 /* KPI */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .kpi{padding:18px 20px 16px;position:relative;overflow:hidden}
-.kpi .lbl{font-size:13px;color:var(--ink-2);font-weight:500;display:flex;align-items:center;gap:6px}
-.kpi .lbl small{color:var(--ink-3);font-weight:400}
-.kpi .val{font-size:30px;font-weight:700;margin-top:6px;letter-spacing:-.5px}
-.kpi .sub{margin-top:6px;font-size:12.5px;color:var(--ink-3);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.kpi.hero{background:linear-gradient(160deg,#fff 0,#f2fbfb 100%)}
-.kpi.hero::after{content:"";position:absolute;inset:0 0 auto auto;width:4px;height:100%;background:var(--accent)}
-.delta{display:inline-flex;align-items:center;gap:3px;font-weight:600;font-size:12px;padding:2px 8px;border-radius:999px;direction:ltr}
-.delta.up{color:var(--good);background:#e7f6ee}.delta.down{color:var(--bad);background:#fdecea}.delta.flat{color:var(--ink-3);background:#eef1f5}
-.split{display:flex;height:5px;border-radius:9px;overflow:hidden;margin-top:12px;background:#eef1f5}
+.kpi .lbl{font-size:14px;color:var(--mute);font-weight:600}
+.kpi .lbl small{color:var(--mute-2);font-weight:400}
+.kpi .val{font-size:34px;font-weight:800;margin-top:2px;letter-spacing:-.5px;color:var(--ink);line-height:1.15}
+.kpi .sub{margin-top:5px;font-size:12.5px;color:var(--mute-2);display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:22px}
+.kpi.hero{background:linear-gradient(180deg,var(--yellow-soft),#fff 70%)}
+.kpi.hero::before{content:"";position:absolute;top:0;inset-inline-start:0;width:100%;height:4px;background:var(--yellow)}
+.delta{display:inline-flex;align-items:center;gap:3px;font-weight:700;font-size:12px;padding:2px 8px;border-radius:999px;direction:ltr}
+.delta.up{color:var(--good);background:var(--good-bg)}.delta.down{color:var(--bad);background:var(--bad-bg)}.delta.flat{color:var(--mute-2);background:var(--hair-2)}
+.split{display:flex;height:6px;border-radius:9px;overflow:hidden;margin-top:12px;background:var(--hair-2);gap:2px}
 .split i{display:block;height:100%}
-.split .m{background:var(--meta)}.split .g{background:var(--google)}
-.splitlbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);margin-top:5px}
+.plist{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:7px}
+.plist span{display:inline-flex;align-items:center;gap:5px}
+.plist i{width:8px;height:8px;border-radius:50%;display:inline-block}
 
-/* chart */
-.section{margin-top:22px}
+/* sections */
+.section{margin-top:28px}
 .sec-h{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:0 2px 12px;flex-wrap:wrap}
-.sec-h h2{margin:0;font-size:19px;font-weight:700}
-.sec-h p{margin:2px 0 0;color:var(--ink-3);font-size:13px}
-.legend{display:flex;gap:14px;font-size:12.5px;color:var(--ink-2);flex-wrap:wrap}
+.sec-h h2{margin:0;font-size:24px;font-weight:800;display:flex;align-items:center;gap:10px}
+.sec-h h2::before{content:"";width:6px;height:22px;border-radius:3px;background:var(--yellow)}
+.sec-h p{margin:2px 0 0;color:var(--mute-2);font-size:13.5px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--mute);flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
-.chart{padding:18px 18px 8px;position:relative}
-.chart svg{width:100%;height:260px;display:block}
-.tip{position:absolute;pointer-events:none;background:var(--navy);color:#fff;border-radius:10px;padding:9px 12px;font-size:12.5px;line-height:1.6;opacity:0;transition:opacity .1s;white-space:nowrap;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-.tip b{font-weight:600}
 
-/* platform */
+.share{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.sh{padding:16px 18px;display:flex;align-items:center;gap:14px}
+.ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none}
+.ic.meta{background:#E9EAF0}.ic.google{background:var(--yellow-2)}.ic.linkedin{background:#E5EEF6}
+.sh h4{margin:0;font-size:16px;font-weight:700}
+.sh p{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.sh .pct{margin-inline-start:auto;text-align:left}
+.sh .pct b{display:block;font-size:22px;font-weight:800}
+.sh .pct span{font-size:12px;color:var(--mute-2)}
+
+.chart{padding:18px 18px 8px;position:relative}
+.chart svg{width:100%;height:270px;display:block}
+.tip{position:absolute;pointer-events:none;background:var(--navy);color:#fff;border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.65;opacity:0;transition:opacity .1s;white-space:nowrap;z-index:5;box-shadow:0 10px 28px rgba(0,0,0,.25);border-top:3px solid var(--yellow)}
+
+/* platform cards */
 .plat{padding:0;overflow:hidden}
-.plat-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.plat-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--hair);flex-wrap:wrap}
 .plat-t{display:flex;align-items:center;gap:12px}
-.plat-ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center}
-.plat-ic.meta{background:#e8f1fe}.plat-ic.google{background:#fdeceb}
-.plat-t h3{margin:0;font-size:18px}
-.plat-t p{margin:0;font-size:12.5px;color:var(--ink-3)}
-.mini{display:grid;grid-template-columns:repeat(8,1fr);border-bottom:1px solid var(--line);background:var(--surface-2)}
-.mini div{padding:14px 16px;border-inline-start:1px solid var(--line)}
+.plat-t h3{margin:0;font-size:21px;font-weight:800}
+.plat-t p{margin:0;font-size:13px;color:var(--mute-2)}
+.plat-badge{font-size:12.5px;color:var(--navy);background:var(--yellow-soft);border:1px solid var(--yellow-2);padding:4px 11px;border-radius:999px;font-weight:600}
+.mini{display:grid;grid-template-columns:repeat(8,1fr);border-bottom:1px solid var(--hair);background:var(--surface-2)}
+.mini div{padding:14px 16px;border-inline-start:1px solid var(--hair-2)}
 .mini div:first-child{border-inline-start:0}
-.mini span{display:block;font-size:12px;color:var(--ink-3)}
-.mini b{display:block;font-size:18px;font-weight:700;margin-top:2px}
+.mini span{display:block;font-size:12.5px;color:var(--mute-2)}
+.mini b{display:block;font-size:19px;font-weight:800;margin-top:1px}
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px;min-width:980px}
-th{font-weight:500;color:var(--ink-3);font-size:12.5px;text-align:start;padding:11px 14px;background:#fff;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:1000px}
+th{font-weight:600;color:var(--mute-2);font-size:13px;text-align:start;padding:11px 14px;background:#fff;border-bottom:1px solid var(--hair);white-space:nowrap;cursor:pointer;user-select:none}
 th:hover{color:var(--ink)}
-th.sorted{color:var(--ink);font-weight:600}
+th.sorted{color:var(--ink);font-weight:700}
 th.sorted::after{content:" ▾";font-size:10px}
 th.sorted.asc::after{content:" ▴"}
-td{padding:13px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
-tbody tr:hover{background:#f9fbfd}
+td{padding:13px 14px;border-bottom:1px solid var(--hair-2);white-space:nowrap}
+tbody tr:hover{background:#FCFBF5}
 tbody tr:last-child td{border-bottom:0}
 td.n,th.n{text-align:left}
 .course{white-space:normal;min-width:260px;max-width:380px}
-.course b{font-weight:600;display:block;line-height:1.35}
+.course b{font-weight:700;display:block;line-height:1.35}
 .tags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
-.tag{font-size:11px;padding:2px 8px;border-radius:6px;background:#eef1f5;color:var(--ink-2)}
-.tag.t-lead{background:#e6f7f8;color:#00727a}.tag.t-brand{background:#f6efdf;color:#8a6a1f}.tag.t-search{background:#e9f0fe;color:#1a56c4}
-.tag.t-date{background:transparent;border:1px solid var(--line);color:var(--ink-3)}
-.bar{height:4px;border-radius:4px;background:#eef1f5;margin-top:6px;overflow:hidden;width:90px}
+.tag{font-size:11.5px;padding:1px 8px;border-radius:6px;background:var(--hair-2);color:var(--mute)}
+.tag.t-lead{background:var(--good-bg);color:#17784A}.tag.t-brand{background:var(--yellow-2);color:#7A5A00}.tag.t-search{background:#E9EAF0;color:var(--navy)}
+.tag.t-date{background:transparent;border:1px solid var(--hair);color:var(--mute-2)}
+.bar{height:4px;border-radius:4px;background:var(--hair-2);margin-top:6px;overflow:hidden;width:90px}
 .bar i{display:block;height:100%}
-tfoot td{font-weight:700;background:var(--surface-2);border-top:1px solid var(--line);border-bottom:0}
-.muted{color:var(--ink-3)}
-.empty{padding:28px;text-align:center;color:var(--ink-3)}
-.foot{margin-top:26px;color:var(--ink-3);font-size:12.5px;line-height:1.7}
-.foot b{color:var(--ink-2);font-weight:500}
+tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--hair);border-bottom:0}
+.muted{color:var(--mute-2)}
+.empty{padding:28px;text-align:center;color:var(--mute-2)}
+.foot{margin-top:32px;padding-top:18px;border-top:1px solid var(--hair);color:var(--mute-2);font-size:13px;line-height:1.75;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.foot .defs{max-width:860px}
+.foot b{color:var(--ink);font-weight:700}
+.foot .sig{display:flex;align-items:center;gap:10px;color:var(--ink);font-size:12.5px}
+.foot .sig img{width:34px;height:34px;border-radius:50%}
 
-@media (max-width:1100px){.mini{grid-template-columns:repeat(4,1fr)}.mini div:nth-child(5){border-inline-start:0}.mini div:nth-child(-n+4){border-bottom:1px solid var(--line)}}
-@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:1100px){.mini{grid-template-columns:repeat(4,1fr)}.mini div:nth-child(5){border-inline-start:0}.mini div:nth-child(-n+4){border-bottom:1px solid var(--hair-2)}}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.share{grid-template-columns:1fr}}
 @media (max-width:560px){
   .wrap{padding:0 16px}
-  header{padding:20px 0 84px}
-  .brand h1{font-size:20px}.meta-info{text-align:right}
-  .kpi .val{font-size:24px}.kpi{padding:14px 14px 12px}
-  .mini{grid-template-columns:repeat(2,1fr)}.mini div{border-bottom:1px solid var(--line)}.mini div:nth-child(odd){border-inline-start:0}
+  .mast{padding:18px 0 86px}
+  .client{gap:12px}.client-logo{padding:8px 10px}.client-logo img{height:34px}.title h1{font-size:24px}
+  .kpi .val{font-size:26px}.kpi{padding:14px 14px 12px}
+  .mini{grid-template-columns:repeat(2,1fr)}.mini div{border-bottom:1px solid var(--hair-2)}.mini div:nth-child(odd){border-inline-start:0}
   .custom{margin-inline-start:0;width:100%;justify-content:space-between}
-  .custom input{width:42%}
+  .custom input{width:40%}
   .chart svg{height:220px}
 }
-@media print{header{padding-bottom:30px}main{margin-top:16px}.periods{display:none}.card{box-shadow:none}}
+@media print{.mast{padding-bottom:30px}main{margin-top:16px}.periods{display:none}.card{box-shadow:none}}
 </style>
 </head>
 <body>
-<header>
+<header class="mast">
   <div class="wrap">
     <div class="top">
-      <div class="brand">
-        <div class="logo">FORE</div>
-        <div>
-          <h1>דשבורד ביצועי מדיה</h1>
-          <p>FORE · אוניברסיטת רייכמן – לימודי חוץ</p>
+      <div class="client">
+        <div class="client-logo"><img src="assets/fore-logo-heb-blue.jpg" alt="FORE אוניברסיטת רייכמן – לימודי חוץ והכשרת מנהלים"></div>
+        <div class="title">
+          <div class="eyebrow">דשבורד ביצועי מדיה</div>
+          <h1>FORE · לימודי חוץ</h1>
         </div>
       </div>
-      <div class="meta-info">
-        <div>נתונים מעודכנים עד <b id="asOf">—</b></div>
-        <div>עודכן לאחרונה: <span id="updated">—</span></div>
+      <div class="agency">
+        <div class="t"><b>BRIGHT</b>נתונים עד <span id="asOf" class="num">—</span> · עודכן <span id="updated" class="num">—</span></div>
+        <img src="assets/bright-logo.png" alt="BRIGHT">
       </div>
     </div>
     <div class="periods" id="periods">
@@ -167,115 +189,120 @@ tfoot td{font-weight:700;background:var(--surface-2);border-top:1px solid var(--
   <section class="kpis" id="kpis"></section>
 
   <section class="section">
+    <div class="sec-h"><div><h2>חלוקה לפי פלטפורמה</h2><p>חלק מההשקעה והלידים בתקופה הנבחרת</p></div></div>
+    <div class="share" id="share"></div>
+  </section>
+
+  <section class="section">
     <div class="sec-h">
       <div><h2>מגמה יומית</h2><p>השקעה יומית לפי פלטפורמה וכמות לידים</p></div>
       <div class="legend">
-        <span><i style="background:var(--meta)"></i>השקעה Meta</span>
-        <span><i style="background:var(--google)"></i>השקעה Google</span>
-        <span><i style="background:var(--accent);height:3px;border-radius:2px"></i>לידים</span>
+        <span><i style="background:var(--c-meta)"></i>Meta</span>
+        <span><i style="background:var(--c-google)"></i>Google</span>
+        <span><i style="background:var(--c-linkedin)"></i>LinkedIn</span>
+        <span><i style="background:var(--c-leads);height:3px;border-radius:2px"></i>לידים</span>
       </div>
     </div>
     <div class="card chart"><svg id="chart" role="img" aria-label="גרף מגמה יומית"></svg><div class="tip" id="tip"></div></div>
   </section>
 
   <section class="section">
-    <div class="sec-h"><div><h2>פירוט לפי פלטפורמה</h2><p>כל הקמפיינים והקורסים שרצו בתקופה הנבחרת · לחיצה על כותרת עמודה ממיינת</p></div></div>
+    <div class="sec-h"><div><h2>פירוט קמפיינים וקורסים</h2><p>כל הקמפיינים שרצו בתקופה הנבחרת · לחיצה על כותרת עמודה ממיינת</p></div></div>
     <div id="platforms"></div>
   </section>
 
   <div class="foot">
-    <b>הגדרות:</b> לידים ב-Meta = לידים מטופס לידים פנימי של Meta בלבד (Instant Form). לידים ב-Google = המרות שהוגדרו בחשבון Google Ads.
-    הקלקות ב-Meta = הקלקות על קישור. אחוז הקלקה (CTR) = הקלקות ÷ חשיפות. אחוז המרה = לידים ÷ הקלקות. עלות לליד = השקעה ÷ לידים.
-    Reach (חשיפה ייחודית) זמין ב-Meta בלבד ומוצג עבור התקופות המוגדרות מראש. השוואה מתייחסת לתקופה קודמת באורך זהה.
-    <br>מופק ע"י BRIGHT · הנתונים נמשכים אוטומטית מ-Meta Ads ו-Google Ads.
+    <div class="defs">
+      <b>הגדרות:</b> לידים ב-Meta = טופס לידים פנימי של Meta בלבד (Instant Form). לידים ב-LinkedIn = טופס לידים פנימי של LinkedIn (Lead Gen Form).
+      לידים ב-Google = המרות שהוגדרו בחשבון Google Ads. הקלקות ב-Meta = הקלקות על קישור.
+      CTR = הקלקות ÷ חשיפות · אחוז המרה = לידים ÷ הקלקות · עלות לליד = השקעה ÷ לידים.
+      השקעת LinkedIn מחויבת בדולר ומומרת לשקלים לפי השער היומי.
+      Reach (חשיפה ייחודית) זמין ב-Meta וב-LinkedIn ומוצג לתקופות המוגדרות מראש; ה-Reach הכולל הוא סכום שתי הפלטפורמות.
+      ההשוואה מתייחסת לתקופה הקודמת המקבילה.
+    </div>
+    <div class="sig"><img src="assets/bright-logo.png" alt=""><span>הופק ע"י <b>BRIGHT</b></span></div>
   </div>
 </main>
 
 <script>
+const PL = ['meta','google','linkedin'];
 const PLAT = {
-  meta:   {name:'Meta', sub:'Facebook & Instagram', color:'var(--meta)',
-           icon:'<svg width="22" height="22" viewBox="0 0 24 24"><path fill="#1877f2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>'},
-  google: {name:'Google Ads', sub:'חיפוש · Performance Max · רשת המדיה', color:'var(--google)',
-           icon:'<svg width="22" height="22" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>'}
+  meta:   {name:'Meta', sub:'Facebook & Instagram', color:'#141B34', reach:true, clicks:'הקלקות (קישור)',
+           icon:'<svg width="22" height="22" viewBox="0 0 24 24"><path fill="#141B34" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>'},
+  google: {name:'Google Ads', sub:'חיפוש · Performance Max · רשת המדיה', color:'#E9B824', reach:false, clicks:'הקלקות',
+           icon:'<svg width="22" height="22" viewBox="0 0 48 48"><path fill="#141B34" d="M43.6 20.1H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/></svg>'},
+  linkedin:{name:'LinkedIn', sub:'Sponsored Content · Lead Gen Forms', color:'#5B8DB8', reach:true, clicks:'הקלקות',
+           icon:'<svg width="22" height="22" viewBox="0 0 24 24"><path fill="#3F6E99" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>'}
 };
 const TYPE = {
   'leadgen':['לידים · טופס','t-lead'], 'leadgen - remarketing':['רימרקטינג · טופס','t-lead'],
-  'website leads':['לידים · אתר','t-lead'], 'engagement':['מעורבות','t-brand'], 'awarness':['מודעות','t-brand'], 'awareness':['מודעות','t-brand'],
+  'website leads':['לידים · אתר','t-lead'], 'engagement':['מעורבות','t-brand'], 'engagment':['מעורבות','t-brand'],
+  'awarness':['מודעות','t-brand'], 'awareness':['מודעות','t-brand'], 'brand awareness':['מודעות למותג','t-brand'],
   'search':['חיפוש','t-search'], 'pmax':['Performance Max','t-search'], 'gdn':['רשת המדיה (GDN)','t-search'], 'youtube':['YouTube','t-search']
 };
 
 const from = document.getElementById('from'), to = document.getElementById('to');
-let DATA, state ={key:'last30', from:null, to:null}, sortBy = {meta:['s',-1], google:['s',-1]};
+let DATA, state = {key:'last30', from:null, to:null};
+const sortBy = Object.fromEntries(PL.map(p => [p, ['s',-1]]));
 
 const nf = new Intl.NumberFormat('he-IL');
 const fmt = {
   int: v => nf.format(Math.round(v)),
   ils: v => '₪' + nf.format(Math.round(v)),
-  ils2: v => '₪' + new Intl.NumberFormat('he-IL',{minimumFractionDigits:0,maximumFractionDigits:v<100?1:0}).format(v),
+  ils2: v => '₪' + new Intl.NumberFormat('he-IL',{maximumFractionDigits:v<100?1:0}).format(v),
   pct: v => (v*100).toFixed(v<0.1?2:1) + '%',
   date: s => { const [y,m,d] = s.split('-'); return `${+d}.${+m}.${y.slice(2)}`; }
 };
-const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const iso = d => d.toISOString().slice(0,10);
 const addDays = (s,n) => { const d = new Date(s+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return iso(d); };
 const days = (a,b) => Math.round((new Date(b+'T00:00:00Z') - new Date(a+'T00:00:00Z'))/864e5) + 1;
+const or = (v,f,dash='—') => v==null ? dash : f(v);
 
 function parseCampaign(raw){
   const parts = (raw.includes('|') ? raw.split('|') : raw.split(' - ')).map(s=>s.trim()).filter(Boolean);
-  const isNoise = s => /^bright$/i.test(s) || /^[\d.,]+$/.test(s);
-  const rest = parts.filter(s => !isNoise(s));
-  let type = rest[0] || '';
+  const rest = parts.filter(s => !(/^bright$/i.test(s) || /^[\d.,]+$/.test(s)));
+  const type = rest[0] || '';
   const tinfo = TYPE[type.toLowerCase()];
   const body = tinfo ? rest.slice(1) : rest;
   const heb = body.filter(s => /[֐-׿]/.test(s));
-  let name = heb.length ? heb.join(' · ') : '';
-  const brand = body.some(s => /^brand$/i.test(s) || /brand/i.test(s));
-  if (!name) name = brand ? 'קמפיין מותג' : (body.filter(s=>!/^generic$/i.test(s)).join(' · ') || raw);
+  const brand = body.some(s => /brand/i.test(s)) || /brand/i.test(type);
+  const extra = body.filter(s => !/[֐-׿]/.test(s) && !/^(generic|brand|video|thought leadership)$/i.test(s));
+  let name = heb.length ? heb.join(' · ') : (brand ? 'קמפיין מותג' : (extra.join(' · ') || raw));
   let date = null;
   const dm = name.match(/\(?\b(\d{1,2}\.\d{1,2}\.\d{2,4})\b\)?/);
   if (dm){ date = dm[1]; name = name.replace(dm[0],'').replace(/\s{2,}/g,' ').trim(); }
-  name = name.replace(/\(\s*\)/g,'').trim();
   const tags = [];
-  if (tinfo) tags.push(tinfo); else if (type) tags.push([type,'']);
+  if (tinfo) tags.push(tinfo); else if (type && heb.length) tags.push([type,'']);
   if (brand && heb.length) tags.push(['מותג','t-brand']);
+  if (!heb.length) extra.filter(s => s!==type).forEach(s => tags.push([s.replace(/\(remarketing\)/i,'· רימרקטינג'),'']));
+  if (/thought leadership/i.test(raw)) tags.push(['Thought Leadership','']);
+  if (/\|\s*video\s*$/i.test(raw)) tags.push(['וידאו','']);
   if (/customer list/i.test(raw)) tags.push(['רשימת לקוחות','']);
   if (date) tags.push(['מועד פתיחה ' + date,'t-date']);
-  return {name, tags};
+  return {name: name.replace(/\(\s*\)/g,'').trim(), tags};
 }
 
-function range(){
-  if (state.key === 'custom') return [state.from, state.to];
-  return DATA.presets[state.key];
+const range = () => state.key === 'custom' ? [state.from, state.to] : DATA.presets[state.key];
+function presetKey(){
+  if (state.key !== 'custom') return state.key;
+  return Object.keys(DATA.presets).find(k => DATA.presets[k][0]===state.from && DATA.presets[k][1]===state.to) || null;
 }
-
-function agg(rows){
-  const t = {i:0,k:0,l:0,s:0};
-  for (const r of rows){ t.i+=r.i; t.k+=r.k; t.l+=r.l; t.s+=r.s; }
-  return derive(t);
+function reachFor(p, campaign){
+  const k = presetKey(); const R = k && DATA.reach[k] && DATA.reach[k][p];
+  if (!R) return null;
+  if (!campaign) return R.total ?? null;
+  return R.by[campaign] ?? null;
 }
-function derive(t){
-  t.ctr = t.i ? t.k/t.i : null; t.cpl = t.l ? t.s/t.l : null; t.cr = t.k ? t.l/t.k : null; return t;
-}
+function derive(t){ t.ctr = t.i ? t.k/t.i : null; t.cpl = t.l ? t.s/t.l : null; t.cr = t.k ? t.l/t.k : null; return t; }
+function agg(rows){ const t = {i:0,k:0,l:0,s:0}; for (const r of rows){ t.i+=r.i; t.k+=r.k; t.l+=r.l; t.s+=r.s; } return derive(t); }
 const inRange = (a,b) => r => r.d >= a && r.d <= b;
-
-function reachFor(campaign){
-  if (state.key === 'custom'){
-    const k = Object.keys(DATA.presets).find(k => DATA.presets[k][0]===state.from && DATA.presets[k][1]===state.to);
-    if (!k) return null;
-    return campaign ? (DATA.reach[k]?.by[campaign] ?? null) : (DATA.reach[k]?.total ?? null);
-  }
-  const R = DATA.reach[state.key]; if (!R) return null;
-  return campaign ? (R.by[campaign] ?? null) : R.total;
-}
 
 function delta(cur, prev, inverse){
   if (cur == null || prev == null || !prev) return '';
-  const ch = (cur - prev) / prev;
-  if (!isFinite(ch)) return '';
-  const good = inverse ? ch < 0 : ch > 0;
-  const cls = Math.abs(ch) < 0.005 ? 'flat' : (good ? 'up' : 'down');
-  const arrow = ch > 0 ? '▲' : (ch < 0 ? '▼' : '');
-  return `<span class="delta ${cls}" title="לעומת התקופה הקודמת">${arrow} ${Math.abs(ch*100).toFixed(Math.abs(ch)<0.1?1:0)}%</span>`;
+  const ch = (cur - prev) / prev; if (!isFinite(ch)) return '';
+  const cls = Math.abs(ch) < 0.005 ? 'flat' : ((inverse ? ch < 0 : ch > 0) ? 'up' : 'down');
+  return `<span class="delta ${cls}" title="לעומת התקופה הקודמת">${ch>0?'▲':ch<0?'▼':''} ${Math.abs(ch*100).toFixed(Math.abs(ch)<0.1?1:0)}%</span>`;
 }
 
 function render(){
@@ -283,34 +310,34 @@ function render(){
   const n = days(a,b);
   let pa = addDays(a,-n), pb = addDays(a,-1);
   if (state.key === 'lastMonth' || state.key === 'lastQuarter'){
-    const back = state.key === 'lastMonth' ? 1 : 3, d = new Date(a+'T00:00:00Z');
-    d.setUTCMonth(d.getUTCMonth()-back); pa = iso(d);
+    const d = new Date(a+'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() - (state.key==='lastMonth'?1:3)); pa = iso(d);
   }
   const cur = DATA.rows.filter(inRange(a,b)), prev = DATA.rows.filter(inRange(pa,pb));
   const T = agg(cur), P = agg(prev);
-  const M = agg(cur.filter(r=>r.p==='meta')), G = agg(cur.filter(r=>r.p==='google'));
-  const reach = reachFor(null);
+  const by = Object.fromEntries(PL.map(p => [p, agg(cur.filter(r=>r.p===p))]));
+  const rM = reachFor('meta'), rL = reachFor('linkedin');
+  const reach = (rM==null && rL==null) ? null : (rM||0) + (rL||0);
 
   document.getElementById('rangeTxt').innerHTML =
     `תקופה: <b class="num">${fmt.date(a)} – ${fmt.date(b)}</b> (${n} ימים) · השוואה לתקופה <span class="num">${fmt.date(pa)} – ${fmt.date(pb)}</span>`;
 
-  const share = (m,g,f) => { const s=m+g; if(!s) return ''; const pm = m/s*100;
-    return `<div class="split"><i class="m" style="width:${pm}%"></i><i class="g" style="width:${100-pm}%"></i></div>
-            <div class="splitlbl"><span>Meta ${f(m)}</span><span>Google ${f(g)}</span></div>`; };
+  const short = p => PLAT[p].name.split(' ')[0];
+  const split = (key, f) => { const tot = PL.reduce((s,p)=>s+by[p][key],0); if(!tot) return '';
+    return `<div class="split">${PL.map(p=>`<i style="width:${by[p][key]/tot*100}%;background:${PLAT[p].color}"></i>`).join('')}</div>
+            <div class="plist">${PL.map(p=>`<span><i style="background:${PLAT[p].color}"></i>${short(p)} <b class="num">${f(by[p][key])}</b></span>`).join('')}</div>`; };
+  const per = (key, f) => `<div class="plist" style="margin-top:12px">${PL.map(p=>`<span><i style="background:${PLAT[p].color}"></i>${short(p)} <b class="num">${or(by[p][key],f)}</b></span>`).join('')}</div>`;
 
   const cards = [
-    {lbl:'השקעה כוללת', val:fmt.ils(T.s), d:delta(T.s,P.s,null), hero:1, extra:share(M.s,G.s,fmt.ils)},
-    {lbl:'לידים', val:fmt.int(T.l), d:delta(T.l,P.l), hero:1, extra:share(M.l,G.l,fmt.int)},
-    {lbl:'עלות לליד', val:T.cpl!=null?fmt.ils2(T.cpl):'—', d:delta(T.cpl,P.cpl,true), hero:1,
-       extra:`<div class="splitlbl" style="margin-top:12px"><span>Meta ${M.cpl!=null?fmt.ils2(M.cpl):'—'}</span><span>Google ${G.cpl!=null?fmt.ils2(G.cpl):'—'}</span></div>`},
-    {lbl:'אחוז המרה', val:T.cr!=null?fmt.pct(T.cr):'—', d:delta(T.cr,P.cr), hero:1,
-       extra:`<div class="splitlbl" style="margin-top:12px"><span>Meta ${M.cr!=null?fmt.pct(M.cr):'—'}</span><span>Google ${G.cr!=null?fmt.pct(G.cr):'—'}</span></div>`},
-    {lbl:'חשיפות', val:fmt.int(T.i), d:delta(T.i,P.i), extra:share(M.i,G.i,fmt.int)},
-    {lbl:'Reach <small>(Meta)</small>', val:reach!=null?fmt.int(reach):'—',
-       sub:reach!=null?`תדירות ממוצעת ${(M.i/reach).toFixed(2)}`:'זמין לתקופות המוגדרות מראש'},
-    {lbl:'הקלקות', val:fmt.int(T.k), d:delta(T.k,P.k), extra:share(M.k,G.k,fmt.int)},
-    {lbl:'אחוז הקלקה (CTR)', val:T.ctr!=null?fmt.pct(T.ctr):'—', d:delta(T.ctr,P.ctr),
-       extra:`<div class="splitlbl" style="margin-top:12px"><span>Meta ${M.ctr!=null?fmt.pct(M.ctr):'—'}</span><span>Google ${G.ctr!=null?fmt.pct(G.ctr):'—'}</span></div>`},
+    {lbl:'השקעה כוללת', val:fmt.ils(T.s), d:delta(T.s,P.s,null), hero:1, extra:split('s',fmt.ils)},
+    {lbl:'לידים', val:fmt.int(T.l), d:delta(T.l,P.l), hero:1, extra:split('l',fmt.int)},
+    {lbl:'עלות לליד', val:or(T.cpl,fmt.ils2), d:delta(T.cpl,P.cpl,true), hero:1, extra:per('cpl',fmt.ils2)},
+    {lbl:'אחוז המרה', val:or(T.cr,fmt.pct), d:delta(T.cr,P.cr), hero:1, extra:per('cr',fmt.pct)},
+    {lbl:'חשיפות', val:fmt.int(T.i), d:delta(T.i,P.i), extra:split('i',fmt.int)},
+    {lbl:'Reach <small>(Meta + LinkedIn)</small>', val:or(reach,fmt.int),
+       sub:reach!=null?'':'זמין לתקופות המוגדרות מראש',
+       extra:reach!=null?`<div class="plist" style="margin-top:12px"><span><i style="background:${PLAT.meta.color}"></i>Meta <b class="num">${or(rM,fmt.int)}</b></span><span><i style="background:${PLAT.linkedin.color}"></i>LinkedIn <b class="num">${or(rL,fmt.int)}</b></span></div>`:''},
+    {lbl:'הקלקות', val:fmt.int(T.k), d:delta(T.k,P.k), extra:split('k',fmt.int)},
+    {lbl:'אחוז הקלקה (CTR)', val:or(T.ctr,fmt.pct), d:delta(T.ctr,P.ctr), extra:per('ctr',fmt.pct)},
   ];
   document.getElementById('kpis').innerHTML = cards.map(c => `
     <div class="card kpi ${c.hero?'hero':''}">
@@ -320,57 +347,54 @@ function render(){
       ${c.extra||''}
     </div>`).join('');
 
+  document.getElementById('share').innerHTML = PL.map(p => {
+    const o = by[p], sp = T.s ? o.s/T.s : 0, lp = T.l ? o.l/T.l : 0;
+    return `<div class="card sh"><div class="ic ${p}">${PLAT[p].icon}</div>
+      <div><h4>${PLAT[p].name}</h4><p><span class="num">${fmt.ils(o.s)}</span> · ${fmt.int(o.l)} לידים · עלות לליד <span class="num">${or(o.cpl,fmt.ils2)}</span></p></div>
+      <div class="pct"><b class="num">${Math.round(sp*100)}%</b><span>מההשקעה · ${Math.round(lp*100)}% מהלידים</span></div></div>`;
+  }).join('');
+
   renderChart(cur, a, b);
-  renderPlatforms(cur, {meta:M, google:G}, reach);
+  renderPlatforms(cur, by);
 }
 
-function renderPlatforms(cur, totals, reachTotal){
+function renderPlatforms(cur, totals){
   const out = [];
-  for (const p of ['meta','google']){
-    const rows = cur.filter(r=>r.p===p);
+  for (const p of PL){
     const byC = {};
-    for (const r of rows){ (byC[r.c] ||= {c:r.c,i:0,k:0,l:0,s:0}); const o=byC[r.c]; o.i+=r.i;o.k+=r.k;o.l+=r.l;o.s+=r.s; }
-    let list = Object.values(byC).map(derive);
-    if (p==='meta') list.forEach(o => o.r = reachFor(o.c));
+    for (const r of cur) if (r.p===p){ const o = (byC[r.c] ||= {c:r.c,i:0,k:0,l:0,s:0}); o.i+=r.i;o.k+=r.k;o.l+=r.l;o.s+=r.s; }
+    const list = Object.values(byC).map(derive);
+    if (PLAT[p].reach) list.forEach(o => o.r = reachFor(p, o.c));
     const [key,dir] = sortBy[p];
-    list.sort((x,y) => ((x[key]??-1) - (y[key]??-1)) * dir || y.s - x.s);
-    const T = totals[p], maxS = Math.max(1, ...list.map(o=>o.s));
-    const cols = [
-      ['c','קמפיין / קורס',0], ['s','השקעה',1], ['i','חשיפות',1],
-      ...(p==='meta'?[['r','Reach',1]]:[]),
-      ['k',p==='meta'?'הקלקות (קישור)':'הקלקות',1], ['ctr','CTR',1], ['l','לידים',1], ['cpl','עלות לליד',1], ['cr','אחוז המרה',1]
-    ];
-    const th = cols.map(([k,l,n]) => `<th class="${n?'n':''} ${sortBy[p][0]===k?'sorted'+(sortBy[p][1]>0?' asc':''):''}" data-plat="${p}" data-k="${k}">${l}</th>`).join('');
-    const tr = list.map(o => {
-      const pc = parseCampaign(o.c);
-      return `<tr>
+    list.sort((x,y) => key==='c' ? parseCampaign(x.c).name.localeCompare(parseCampaign(y.c).name,'he')*dir
+                                  : ((x[key]??-1) - (y[key]??-1)) * dir || y.s - x.s);
+    const T = totals[p], maxS = Math.max(1, ...list.map(o=>o.s)), R = PLAT[p].reach, tr_ = reachFor(p);
+    const cols = [['c','קמפיין / קורס',0],['s','השקעה',1],['i','חשיפות',1],...(R?[['r','Reach',1]]:[]),
+                  ['k',PLAT[p].clicks,1],['ctr','CTR',1],['l','לידים',1],['cpl','עלות לליד',1],['cr','אחוז המרה',1]];
+    const th = cols.map(([k,l,n]) => `<th class="${n?'n':''} ${key===k?'sorted'+(dir>0?' asc':''):''}" data-plat="${p}" data-k="${k}">${l}</th>`).join('');
+    const rows = list.map(o => { const pc = parseCampaign(o.c); return `<tr>
         <td class="course" title="${esc(o.c)}"><b>${esc(pc.name)}</b><div class="tags">${pc.tags.map(([t,c])=>`<span class="tag ${c}">${esc(t)}</span>`).join('')}</div></td>
         <td class="n"><span class="num">${fmt.ils(o.s)}</span><div class="bar"><i style="width:${o.s/maxS*100}%;background:${PLAT[p].color}"></i></div></td>
         <td class="n num">${fmt.int(o.i)}</td>
-        ${p==='meta'?`<td class="n num">${o.r!=null?fmt.int(o.r):'<span class="muted">—</span>'}</td>`:''}
+        ${R?`<td class="n num">${or(o.r,fmt.int,'<span class="muted">—</span>')}</td>`:''}
         <td class="n num">${fmt.int(o.k)}</td>
-        <td class="n num">${o.ctr!=null?fmt.pct(o.ctr):'—'}</td>
+        <td class="n num">${or(o.ctr,fmt.pct)}</td>
         <td class="n num"><b>${fmt.int(o.l)}</b></td>
-        <td class="n num">${o.cpl!=null?fmt.ils2(o.cpl):'<span class="muted">—</span>'}</td>
-        <td class="n num">${o.cr!=null?fmt.pct(o.cr):'—'}</td>
-      </tr>`;
-    }).join('');
-    const reachP = p==='meta' ? reachTotal : null;
-    const mini = [
-      ['השקעה', fmt.ils(T.s)], ['לידים', fmt.int(T.l)], ['עלות לליד', T.cpl!=null?fmt.ils2(T.cpl):'—'], ['אחוז המרה', T.cr!=null?fmt.pct(T.cr):'—'],
-      ['חשיפות', fmt.int(T.i)], ['Reach', p==='meta' ? (reachP!=null?fmt.int(reachP):'—') : 'לא רלוונטי'],
-      ['הקלקות', fmt.int(T.k)], ['CTR', T.ctr!=null?fmt.pct(T.ctr):'—']
-    ];
+        <td class="n num">${or(o.cpl,fmt.ils2,'<span class="muted">—</span>')}</td>
+        <td class="n num">${or(o.cr,fmt.pct)}</td></tr>`; }).join('');
+    const mini = [['השקעה',fmt.ils(T.s)],['לידים',fmt.int(T.l)],['עלות לליד',or(T.cpl,fmt.ils2)],['אחוז המרה',or(T.cr,fmt.pct)],
+                  ['חשיפות',fmt.int(T.i)],['Reach',R?or(tr_,fmt.int):'לא זמין'],['הקלקות',fmt.int(T.k)],['CTR',or(T.ctr,fmt.pct)]];
     out.push(`<div class="card plat section">
       <div class="plat-h">
-        <div class="plat-t"><div class="plat-ic ${p}">${PLAT[p].icon}</div><div><h3>${PLAT[p].name}</h3><p>${PLAT[p].sub} · ${list.length} קמפיינים פעילים בתקופה</p></div></div>
+        <div class="plat-t"><div class="ic ${p}">${PLAT[p].icon}</div><div><h3>${PLAT[p].name}</h3><p>${PLAT[p].sub}</p></div></div>
+        <span class="plat-badge">${list.length} קמפיינים פעילים בתקופה</span>
       </div>
       <div class="mini">${mini.map(([l,v])=>`<div><span>${l}</span><b class="num">${v}</b></div>`).join('')}</div>
-      ${list.length ? `<div class="tbl-wrap"><table><thead><tr>${th}</tr></thead><tbody>${tr}</tbody>
+      ${list.length ? `<div class="tbl-wrap"><table><thead><tr>${th}</tr></thead><tbody>${rows}</tbody>
         <tfoot><tr><td>סה"כ ${PLAT[p].name}</td><td class="n num">${fmt.ils(T.s)}</td><td class="n num">${fmt.int(T.i)}</td>
-        ${p==='meta'?`<td class="n num">${reachP!=null?fmt.int(reachP):'—'}</td>`:''}
-        <td class="n num">${fmt.int(T.k)}</td><td class="n num">${T.ctr!=null?fmt.pct(T.ctr):'—'}</td><td class="n num">${fmt.int(T.l)}</td>
-        <td class="n num">${T.cpl!=null?fmt.ils2(T.cpl):'—'}</td><td class="n num">${T.cr!=null?fmt.pct(T.cr):'—'}</td></tr></tfoot></table></div>`
+        ${R?`<td class="n num">${or(tr_,fmt.int)}</td>`:''}
+        <td class="n num">${fmt.int(T.k)}</td><td class="n num">${or(T.ctr,fmt.pct)}</td><td class="n num">${fmt.int(T.l)}</td>
+        <td class="n num">${or(T.cpl,fmt.ils2)}</td><td class="n num">${or(T.cr,fmt.pct)}</td></tr></tfoot></table></div>`
         : `<div class="empty">אין פעילות בפלטפורמה זו בתקופה הנבחרת</div>`}
     </div>`);
   }
@@ -379,76 +403,68 @@ function renderPlatforms(cur, totals, reachTotal){
   el.querySelectorAll('th[data-k]').forEach(th => th.onclick = () => {
     const p = th.dataset.plat, k = th.dataset.k;
     sortBy[p] = sortBy[p][0]===k ? [k, -sortBy[p][1]] : [k, k==='c'?1:-1];
-    if (k==='c') sortBy[p] = [k, sortBy[p][1]];
     render();
   });
 }
 
 function renderChart(cur, a, b){
   const svg = document.getElementById('chart'), tip = document.getElementById('tip');
-  const W = svg.clientWidth || 900, H = svg.clientHeight || 260;
-  const pad = {t:14, r:44, b:28, l:52};
+  const W = svg.clientWidth || 900, H = svg.clientHeight || 270;
+  const pad = {t:14, r:44, b:28, l:54};
   const dates = []; for (let d=a; d<=b; d=addDays(d,1)) dates.push(d);
-  const by = Object.fromEntries(dates.map(d => [d,{m:0,g:0,l:0}]));
-  for (const r of cur){ const o = by[r.d]; if(!o) continue; if(r.p==='meta') o.m+=r.s; else o.g+=r.s; o.l+=r.l; }
-  const S = dates.map(d=>by[d]);
-  const maxS = niceMax(Math.max(1,...S.map(o=>o.m+o.g))), maxL = niceMax(Math.max(1,...S.map(o=>o.l)));
+  const by = Object.fromEntries(dates.map(d => [d,{meta:0,google:0,linkedin:0,l:0}]));
+  for (const r of cur){ const o = by[r.d]; if(!o) continue; o[r.p]+=r.s; o.l+=r.l; }
+  const S = dates.map(d=>by[d]), tot = o => o.meta+o.google+o.linkedin;
+  const maxS = niceMax(Math.max(1,...S.map(tot))), maxL = niceMax(Math.max(1,...S.map(o=>o.l)));
   const iw = W-pad.l-pad.r, ih = H-pad.t-pad.b, bw = iw/dates.length;
-  // RTL: newest on the left? keep chronological left→right for readability of time axis
-  const x = i => pad.l + i*bw;
-  const yS = v => pad.t + ih - v/maxS*ih, yL = v => pad.t + ih - v/maxL*ih;
+  const x = i => pad.l + i*bw, yS = v => pad.t + ih - v/maxS*ih, yL = v => pad.t + ih - v/maxL*ih;
   let g = '';
-  for (let i=0;i<=5;i++){ const v = maxS*i/5, y = yS(v);
-    g += `<line x1="${pad.l}" x2="${W-pad.r}" y1="${y}" y2="${y}" stroke="#e4e9f0" ${i?'stroke-dasharray="3 4"':''}/>`;
-    g += `<text x="${pad.l-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#8593a6">₪${compact(v)}</text>`;
-    g += `<text x="${W-pad.r+8}" y="${y+4}" text-anchor="start" font-size="11" fill="#00a3ad">${compact(maxL*i/5)}</text>`;
+  for (let i=0;i<=5;i++){ const y = yS(maxS*i/5);
+    g += `<line x1="${pad.l}" x2="${W-pad.r}" y1="${y}" y2="${y}" stroke="#E4E4E0" ${i?'stroke-dasharray="3 4"':''}/>`;
+    g += `<text x="${pad.l-8}" y="${y+4}" text-anchor="end" font-size="11.5" fill="#7A7A72">₪${compact(maxS*i/5)}</text>`;
+    g += `<text x="${W-pad.r+8}" y="${y+4}" text-anchor="start" font-size="11.5" fill="#1F9D57">${compact(maxL*i/5)}</text>`;
   }
   const gap = Math.min(4, bw*0.25), w = Math.max(1, bw-gap);
-  S.forEach((o,i) => {
-    const ym = yS(o.m), yg = yS(o.m+o.g);
-    g += `<rect x="${x(i)+gap/2}" y="${ym}" width="${w}" height="${pad.t+ih-ym}" fill="#1877f2" rx="${Math.min(3,w/3)}"/>`;
-    if (o.g) g += `<rect x="${x(i)+gap/2}" y="${yg}" width="${w}" height="${ym-yg}" fill="#ea4335" rx="1"/>`;
+  S.forEach((o,i) => { let base = 0;
+    for (const p of PL){ if (!o[p]) continue; const y0 = yS(base), y1 = yS(base+o[p]);
+      g += `<rect x="${x(i)+gap/2}" y="${y1}" width="${w}" height="${Math.max(0,y0-y1)}" fill="${PLAT[p].color}"/>`; base += o[p]; }
   });
-  const pts = S.map((o,i) => `${x(i)+bw/2},${yL(o.l)}`).join(' ');
-  g += `<polyline points="${pts}" fill="none" stroke="#00a3ad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
-  if (dates.length <= 45) S.forEach((o,i) => g += `<circle cx="${x(i)+bw/2}" cy="${yL(o.l)}" r="3" fill="#fff" stroke="#00a3ad" stroke-width="2"/>`);
+  g += `<polyline points="${S.map((o,i)=>`${x(i)+bw/2},${yL(o.l)}`).join(' ')}" fill="none" stroke="#1F9D57" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if (dates.length <= 45) S.forEach((o,i) => g += `<circle cx="${x(i)+bw/2}" cy="${yL(o.l)}" r="3" fill="#fff" stroke="#1F9D57" stroke-width="2"/>`);
   const step = Math.ceil(dates.length / Math.max(2, Math.floor(iw/70)));
-  dates.forEach((d,i) => { if (i%step===0 || i===dates.length-1 && dates.length<20)
-    g += `<text x="${x(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="11" fill="#8593a6">${fmt.date(d).replace(/\.\d+$/,'')}</text>`; });
-  g += `<rect id="hov" x="0" y="${pad.t}" width="${bw}" height="${ih}" fill="#0b1f3a" opacity="0"/>`;
+  dates.forEach((d,i) => { if (i%step===0)
+    g += `<text x="${x(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="11.5" fill="#7A7A72">${fmt.date(d).replace(/\.\d+$/,'')}</text>`; });
+  g += `<rect id="hov" x="0" y="${pad.t}" width="${bw}" height="${ih}" fill="#141B34" opacity="0"/>`;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.innerHTML = g;
   const hov = svg.querySelector('#hov');
   svg.onmousemove = e => {
-    const rc = svg.getBoundingClientRect(), px = (e.clientX-rc.left)*W/rc.width;
-    const i = Math.floor((px-pad.l)/bw);
+    const rc = svg.getBoundingClientRect(), i = Math.floor(((e.clientX-rc.left)*W/rc.width - pad.l)/bw);
     if (i<0 || i>=dates.length){ tip.style.opacity=0; hov.setAttribute('opacity',0); return; }
     const o = S[i];
     hov.setAttribute('x', x(i)); hov.setAttribute('opacity', .05);
-    tip.innerHTML = `<b>${fmt.date(dates[i])}</b><br>Meta: ${fmt.ils(o.m)}<br>Google: ${fmt.ils(o.g)}<br>לידים: <b>${fmt.int(o.l)}</b>`;
+    tip.innerHTML = `<b>${fmt.date(dates[i])}</b><br>${PL.map(p=>`${PLAT[p].name.split(' ')[0]}: ${fmt.ils(o[p])}`).join('<br>')}<br>לידים: <b>${fmt.int(o.l)}</b>`;
     const cx = (x(i)+bw/2)*rc.width/W + 18;
-    tip.style.left = Math.min(cx + 12, rc.width - tip.offsetWidth + 6) + 'px';
+    tip.style.left = Math.max(6, Math.min(cx + 12, rc.width - tip.offsetWidth + 6)) + 'px';
     tip.style.top = '24px'; tip.style.opacity = 1;
   };
   svg.onmouseleave = () => { tip.style.opacity=0; hov.setAttribute('opacity',0); };
 }
-function niceMax(v){ const p = Math.pow(10, Math.floor(Math.log10(v))); const n = v/p; return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p; }
-function compact(v){ return v>=1000 ? (v/1000).toFixed(v%1000?1:0).replace(/\.0$/,'')+'K' : Math.round(v*10)/10; }
+function niceMax(v){ const p = Math.pow(10, Math.floor(Math.log10(v))), n = v/p; return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p; }
+function compact(v){ return v>=1000 ? (v/1000).toFixed(1).replace(/\.0$/,'')+'K' : String(Math.round(v*10)/10); }
 
 function setKey(k){
   state.key = k;
   document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.p===k));
   document.getElementById('custom').classList.toggle('on', k==='custom');
-  if (k !== 'custom'){ const [a,b] = DATA.presets[k]; from.value = a; to.value = b; }
-  try { localStorage.setItem('fore-period', k); } catch(e){}
+  if (k !== 'custom'){ const [a,b] = DATA.presets[k]; from.value = a; to.value = b; try { localStorage.setItem('fore-period', k); } catch(e){} }
   render();
 }
 
 fetch('data.json?v=' + Date.now()).then(r => r.json()).then(d => {
   DATA = d;
   document.getElementById('asOf').textContent = fmt.date(d.asOf);
-  const up = new Date(d.updated);
-  document.getElementById('updated').textContent = up.toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'});
+  document.getElementById('updated').textContent = new Date(d.updated).toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'});
   const first = d.rows.length ? d.rows[0].d : d.asOf;
   for (const el of [from,to]){ el.min = first; el.max = d.asOf; }
   document.querySelectorAll('.chip').forEach(c => c.onclick = () => setKey(c.dataset.p));
