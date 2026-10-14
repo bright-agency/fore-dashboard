@@ -23,18 +23,20 @@ L = ["impressions", "clicks", "spend", "oneclickleads"]
 # name -> (connector, account, fields, period) ; period: "detail" = last detail_days, "history" = HISTORY_START..as_of
 DATASETS = {
     "meta_ads":     ("facebook", META_ACCOUNT, ["date", "campaign", "adset_name", "ad_id", "ad_name"] + M, "detail"),
-    "meta_ad_info": ("facebook", META_ACCOUNT, ["ad_id", "ad_name", "adset_name", "campaign", "thumbnail_url",
-                                                "adset_effective_status"], "detail"),
+    "meta_ad_info": ("facebook", META_ACCOUNT, ["ad_id", "ad_name", "adset_name", "adset_id", "campaign", "campaign_id",
+                                                "thumbnail_url", "adset_effective_status", "ad_preview_shareable_link"], "detail"),
     "meta_place":   ("facebook", META_ACCOUNT, ["date", "campaign", "publisher_platform", "platform_position"] + M, "detail"),
     "meta_device":  ("facebook", META_ACCOUNT, ["date", "campaign", "device_platform"] + M, "detail"),
     "meta_demo":    ("facebook", META_ACCOUNT, ["date", "campaign", "age", "gender"] + M, "detail"),
-    "meta_camp":    ("facebook", META_ACCOUNT, ["campaign", "campaign_lifetime_budget", "campaign_daily_budget",
+    "meta_camp":    ("facebook", META_ACCOUNT, ["campaign", "campaign_id", "campaign_lifetime_budget", "campaign_daily_budget",
                                                 "campaign_start_time", "campaign_stop_time", "campaign_effective_status"], "history"),
     "g_adgroup":    ("google_ads", GOOGLE_ACCOUNT, ["date", "campaign", "ad_group_name", "ad_group_status"] + G, "detail"),
+    "g_adgroup_info": ("google_ads", GOOGLE_ACCOUNT, ["campaign", "campaign_id", "ad_group_name", "ad_group_id"], "detail"),
     "g_device":     ("google_ads", GOOGLE_ACCOUNT, ["date", "campaign", "device"] + G, "detail"),
     "li_creative":  ("linkedin", LINKEDIN_ACCOUNT, ["date", "campaign", "creative_id", "sponsored_creative_content_title",
                                                     "creative_content_data_share_ad_context_dsc_name"] + L, "detail"),
-    "li_camp":      ("linkedin", LINKEDIN_ACCOUNT, ["campaign", "campaign_group_name", "campaign_start_date", "campaign_end_date",
+    "li_creative_info": ("linkedin", LINKEDIN_ACCOUNT, ["creative_id", "campaign", "campaign_id", "ad_post_url"], "detail"),
+    "li_camp":      ("linkedin", LINKEDIN_ACCOUNT, ["campaign", "campaign_id", "campaign_group_name", "campaign_start_date", "campaign_end_date",
                                                     "campaign_total_budget_amount", "campaign_daily_budget_amount",
                                                     "campaign_status"], "history"),
 }
@@ -88,7 +90,11 @@ def main():
             "senior": get("linkedin", LINKEDIN_ACCOUNT, ["member_seniority"] + L, a, b)}
     fx = usd_ils(HISTORY_START, as_of)
     now = datetime.now(ZoneInfo("Asia/Jerusalem")).isoformat(timespec="minutes")
-    write_outputs(internal.build(client, raw, fx, now))
+    payload = internal.build(client, raw, fx, now)
+    from collections import Counter
+    print("unit links:", dict(Counter((u["p"], ",".join(sorted(u["links"]))) for u in payload["units"])))
+    print("campaign links:", sum(1 for c in payload["campaigns"] if c["url"]), "/", len(payload["campaigns"]))
+    write_outputs(payload)
 
 
 if __name__ == "__main__":

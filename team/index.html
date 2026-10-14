@@ -138,6 +138,12 @@ tbody tr:last-child td{border-bottom:0}
 .ad{display:flex;gap:10px;align-items:center}
 .ad img{width:44px;height:44px;border-radius:8px;object-fit:cover;background:var(--hair-2);flex:none}
 .ad .ph{width:44px;height:44px;border-radius:8px;background:var(--hair-2);flex:none;display:grid;place-items:center;color:var(--mute-2);font-size:11px}
+.lk{display:inline-flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.lk a{font-size:12px;font-weight:700;text-decoration:none;color:var(--navy);background:#fff;border:1px solid #D9DCE6;border-radius:8px;padding:2px 9px;white-space:nowrap}
+.lk a:hover{background:var(--yellow);border-color:var(--yellow)}
+.lk a.pv{background:var(--yellow-soft);border-color:var(--yellow-2)}
+a.cl{color:inherit;text-decoration:none}a.cl:hover{text-decoration:underline}a.cl::after{content:' ↗';font-size:11px;color:var(--mute-2)}
+.ad a img{display:block}
 .more{display:block;margin:-8px auto 16px;border:1px solid var(--hair);background:#fff;border-radius:999px;padding:5px 16px;cursor:pointer;font-weight:600;color:var(--mute)}
 .picon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;vertical-align:middle;margin-inline-end:6px}
 .picon svg{width:13px;height:13px}
@@ -294,6 +300,8 @@ function cleanName(raw){
   let n = heb.length ? heb.join(' · ') : parts.slice(1).join(' · ') || raw;
   return n.replace(/\(?\b\d{1,2}\.\d{1,2}\.\d{2,4}\b\)?/g,'').replace(/\s{2,}/g,' ').trim();
 }
+const LINK_HE = {preview:'תצוגת מודעה', post:'פוסט', manage:{meta:'Ads Manager', google:'Google Ads', linkedin:'Campaign Manager'}};
+const ext = (u, t, cls='') => u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer" class="${cls}">${t} ↗</a>` : '';
 const pIcon = p => `<span class="picon ${p}" title="${PLAT[p].name}">${PLAT[p].icon}</span>`;
 
 /* ---------- data loading ---------- */
@@ -470,7 +478,7 @@ function courseBody(c, cp, ut){
   const ctab = `<table><thead><tr><th>קמפיין</th><th>סטטוס</th><th>תקציב (שם)</th><th>יומי מוגדר</th><th>השקעה</th><th>חשיפות</th><th>הקלקות</th><th>CTR</th>
       <th class="hl">לידים</th><th class="hl">עלות לליד</th><th>אחוז המרה</th></tr></thead><tbody>${camps.map(ci => {
       const m = D.campaigns[ci], t = cp[ci];
-      return `<tr><td class="nm">${pIcon(m.p)}<b style="display:inline">${esc(cleanName(m.name))}</b><br><small>${m.type?`<span class="tag">${TYPE_HE[m.type]||m.type}</span>`:''}${m.end?`סיום ${fmt.date(m.end)}`:''}</small></td>
+      return `<tr><td class="nm">${pIcon(m.p)}<b style="display:inline">${m.url ? `<a class="cl" href="${esc(m.url)}" target="_blank" rel="noopener noreferrer" title="פתיחה ב-${LINK_HE.manage[m.p]}">${esc(cleanName(m.name))}</a>` : esc(cleanName(m.name))}</b><br><small>${m.type?`<span class="tag">${TYPE_HE[m.type]||m.type}</span>`:''}${m.end?`סיום ${fmt.date(m.end)}`:''}</small></td>
         <td>${m.status?`<span class="st ${m.status}">${ST[m.status]}</span>`:'—'}</td>
         <td class="num">${or(m.budget,fmt.ils)}</td><td class="num">${or(m.daily,fmt.ils)}</td>
         <td class="num">${fmt.ils(t.s)}</td><td class="num">${fmt.int(t.i)}</td><td class="num">${fmt.int(t.k)}</td><td class="num">${or(t.ctr,fmt.pct)}</td>
@@ -482,8 +490,11 @@ function courseBody(c, cp, ut){
   const utab = units.length ? `<table><thead><tr><th>מודעה / סט</th><th>פלטפורמה</th><th>השקעה</th><th>חשיפות</th><th>הקלקות</th><th>CTR</th>
       <th class="hl">לידים</th><th class="hl">עלות לליד</th><th>אחוז המרה</th></tr></thead><tbody>${shown.map(u => {
       const t = u.t, title = u.ad || u.set;
-      const img = u.p==='meta' ? (u.thumb ? `<img src="${esc(u.thumb)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ph',textContent:'—'}))">` : `<span class="ph">—</span>`) : '';
-      return `<tr><td><div class="ad">${img}<div class="nm"><b>${esc(title)}</b><small>${u.ad ? (u.p==='linkedin' ? 'קריאייטיב' : 'סט: '+esc(u.set)) : 'קבוצת מודעות'}${u.setStatus?` · ${esc(String(u.setStatus).toLowerCase())}`:''}</small></div></div></td>
+      const L = u.links || {};
+      let img = u.p==='meta' ? (u.thumb ? `<img src="${esc(u.thumb)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ph',textContent:'—'}))">` : `<span class="ph">—</span>`) : '';
+      if (img && L.preview) img = `<a href="${esc(L.preview)}" target="_blank" rel="noopener noreferrer" title="תצוגת מודעה">${img}</a>`;
+      const links = `<span class="lk">${ext(L.preview, LINK_HE.preview, 'pv')}${ext(L.post, LINK_HE.post, 'pv')}${ext(L.manage, LINK_HE.manage[u.p])}</span>`;
+      return `<tr><td><div class="ad">${img}<div class="nm"><b>${esc(title)}</b><small>${u.ad ? (u.p==='linkedin' ? 'קריאייטיב' : 'סט: '+esc(u.set)) : 'קבוצת מודעות'}${u.setStatus?` · ${esc(String(u.setStatus).toLowerCase())}`:''}</small>${links}</div></div></td>
         <td>${pIcon(u.p)}</td><td class="num">${fmt.ils(t.s)}</td><td class="num">${fmt.int(t.i)}</td><td class="num">${fmt.int(t.k)}</td><td class="num">${or(t.ctr,fmt.pct)}</td>
         <td class="num hl"><b>${fmt.int(t.l)}</b></td><td class="num hl">${or(t.cpl,fmt.ils2)}</td><td class="num">${or(t.cr,fmt.pct)}</td></tr>`; }).join('')}</tbody></table>` : '';
   return `<div class="mini-kpis">${mk}</div>

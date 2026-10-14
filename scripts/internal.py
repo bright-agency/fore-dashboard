@@ -162,6 +162,24 @@ def build(client: dict, raw: dict, fx, generated: str) -> dict:
             rows.append([days(r["d"]), ci, r["i"], r["k"], r["l"], round(r["s"], 2)])
     campaigns = [camp_meta[i] for i in range(len(camps.items))]
     day_list = days.items
+    # Platform ids -> deep links (Ads Manager / Google Ads / Campaign Manager)
+    acc = CONFIG["accounts"]
+    g_cust = acc["google"].replace("-", "")
+    cid = {}
+    for ds, p in (("meta_camp", "meta"), ("meta_ad_info", "meta"), ("li_camp", "linkedin"),
+                  ("li_creative_info", "linkedin"), ("g_adgroup_info", "google")):
+        for r in raw.get(ds, []):
+            if r.get("campaign") and r.get("campaign_id"):
+                cid[(p, clean(r["campaign"]))] = str(r["campaign_id"])
+    for c in campaigns:
+        i = cid.get((c["p"], c["name"]))
+        c["id"] = i
+        c["url"] = None if not i else {
+            "meta": f"https://adsmanager.facebook.com/adsmanager/manage/adsets?act={acc['meta']}&selected_campaign_ids={i}",
+            "google": f"https://ads.google.com/aw/adgroups?campaignId={i}&__e={g_cust}",
+            "linkedin": f"https://www.linkedin.com/campaignmanager/accounts/{acc['linkedin']}/campaigns/{i}/creatives",
+        }[c["p"]]
+
     # An undated campaign split across several courses is only "live" for the current course.
     split = defaultdict(list)
     for ci, c in enumerate(campaigns):
@@ -255,6 +273,21 @@ def build(client: dict, raw: dict, fx, generated: str) -> dict:
         return lst[0]
 
     thumbs = {str(r.get("ad_id")): r.get("thumbnail_url") for r in raw.get("meta_ad_info", []) if r.get("ad_id")}
+    previews = {str(r.get("ad_id")): r.get("ad_preview_shareable_link") for r in raw.get("meta_ad_info", []) if r.get("ad_id")}
+    li_posts = {str(r.get("creative_id")): r.get("ad_post_url") for r in raw.get("li_creative_info", []) if r.get("creative_id")}
+    g_groups = {(clean(r.get("campaign")), clean(r.get("ad_group_name"))): str(r.get("ad_group_id"))
+                for r in raw.get("g_adgroup_info", []) if r.get("ad_group_id")}
+
+    def unit_links(p, ci, set_name, ad_id):
+        c = campaigns[ci]
+        if p == "meta":
+            return {"preview": previews.get(ad_id),
+                    "manage": f"https://adsmanager.facebook.com/adsmanager/manage/ads?act={acc['meta']}&selected_ad_ids={ad_id}"}
+        if p == "linkedin":
+            return {"post": li_posts.get(ad_id), "manage": c.get("url")}
+        g = g_groups.get((c["name"], set_name))
+        return {"manage": f"https://ads.google.com/aw/ads?campaignId={c['id']}&adGroupId={g}&__e={g_cust}" if g and c.get("id")
+                else c.get("url")}
     set_status = {(clean(r.get("campaign")), clean(r.get("adset_name"))): r.get("adset_effective_status")
                   for r in raw.get("meta_ad_info", [])}
     units = Index()
@@ -262,7 +295,8 @@ def build(client: dict, raw: dict, fx, generated: str) -> dict:
 
     def add_unit(p, ci, set_name, ad_name, ad_id, thumb, st, d, i, k, l, s):
         ui = units((p, ci, set_name, ad_name, ad_id),
-                   lambda: {"p": p, "c": ci, "set": set_name, "ad": ad_name, "id": ad_id, "thumb": thumb, "setStatus": st})
+                   lambda: {"p": p, "c": ci, "set": set_name, "ad": ad_name, "id": ad_id, "thumb": thumb, "setStatus": st,
+                            "links": {k: v for k, v in unit_links(p, ci, set_name, ad_id).items() if v}})
         unit_rows.append([days(d), ui, int(i), int(k), round(l, 2), round(s, 2)])
 
     for r in raw.get("meta_ads", []):

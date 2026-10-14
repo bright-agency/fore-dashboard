@@ -15,9 +15,9 @@ The campaigners dashboard (`team/index.html`) and any future client agent read t
 | `meta` | `client, generated, asOf` (last full day), `currency` (always ILS), `detailFrom` (start of the ad and breakdown data), `presets` |
 | `days` | list of dates. Every `d` in the rows is an index into this list |
 | `courses[]` | `key, name, start` (course opening date), `launch, phase` (live/paused/ended), `daysLeft, live` (number of live campaigns), `campaigns` (indexes), `budget` (sum of the budgets in the campaign names), `budgetSpent, spent, leads, cpl, avg7, budgetAvg7, expected, pace` (budgetSpent/expected), `elapsedPct, remaining, requiredDaily, projected, dailySet, budgetMissing`, `brand` (true = the "brand and general" group) |
-| `campaigns[]` | `p` (meta/google/linkedin), `name, course` (index), `type, status` (live/paused/ended), `budget` (from the name), `daily` (the daily budget set on the platform, ILS), `start, end, launch` |
+| `campaigns[]` | `p` (meta/google/linkedin), `name, course` (index), `type, status` (live/paused/ended), `budget` (from the name), `daily` (the daily budget set on the platform, ILS), `start, end, launch`, `id, url` (ad platform ID and link) |
 | `rows` | `[d, campaign, impressions, clicks, leads, spend]`, daily per campaign, from history_start |
-| `units[]` | `p, c` (campaign), `set` (ad set / ad group / LinkedIn campaign), `ad, id, thumb, setStatus` |
+| `units[]` | `p, c` (campaign), `set` (ad set / ad group / LinkedIn campaign), `ad, id, thumb, setStatus`, `links` {preview (Meta public preview), post (LinkedIn post), manage (link to the ad platform)} |
 | `unitRows` | `[d, unit, impressions, clicks, leads, spend]`, from detailFrom |
 | `dims` / `breakdowns` | `meta_place, meta_device, meta_age, meta_gender, google_device`. Each row is `[d, campaign, dimIndex, i, k, l, s]` |
 | `liDemo` | `{preset: {func:[[name,i,k,l,s]], senior:[...]}}`. LinkedIn at the whole-account level |
