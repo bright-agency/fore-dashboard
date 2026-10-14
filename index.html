@@ -80,14 +80,34 @@ main{margin-top:-60px;padding-bottom:56px;position:relative;z-index:2}
 .sec-h p{margin:2px 0 0;color:var(--mute-2);font-size:13.5px}
 
 .share{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.sh{padding:16px 18px;display:flex;align-items:center;gap:14px}
+.sh{padding:18px 20px 16px;cursor:pointer;transition:transform .15s, box-shadow .15s;position:relative;overflow:hidden}
+.sh:hover{transform:translateY(-2px);box-shadow:0 14px 30px -14px rgba(20,27,52,.28)}
+.sh.on{outline:2px solid var(--yellow);outline-offset:-2px}
+.sh-h{display:flex;align-items:center;gap:12px}
+.sh-share{margin-right:auto;background:var(--navy);color:#fff;border-radius:999px;padding:3px 12px;font-weight:800;font-size:15px}
+.sh-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;border-top:1px solid var(--hair-2)}
+.sh-stats div{padding:12px 0 2px;text-align:start}
+.sh-stats div+div{border-inline-start:1px solid var(--hair-2);padding-inline-start:14px}
+.sh-stats span{display:block;font-size:12.5px;color:var(--mute-2);font-weight:600}
+.sh-stats b{display:block;font-size:24px;font-weight:800;line-height:1.2;margin-top:2px;text-align:start}
+.sh-bars{margin-top:14px;display:grid;gap:8px}
+.sh-bar{display:grid;grid-template-columns:78px 1fr 40px;align-items:center;gap:10px;font-size:12.5px;color:var(--mute)}
+.sh-bar .tr{height:7px;border-radius:9px;background:var(--hair-2);overflow:hidden}
+.sh-bar .tr i{display:block;height:100%;border-radius:9px}
+.sh-bar b{color:var(--ink);font-weight:800;text-align:left}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tab{display:flex;align-items:center;gap:10px;border:1px solid var(--hair);background:#fff;border-radius:14px;padding:8px 16px 8px 10px;font:inherit;cursor:pointer;color:var(--ink);transition:.15s}
+.tab .ic{width:34px;height:34px;border-radius:10px}
+.tab .ic svg{width:18px;height:18px}
+.tab b{font-size:15.5px;font-weight:800;display:block;text-align:start}
+.tab small{font-size:12px;color:var(--mute-2);display:block;text-align:start}
+.tab:hover{border-color:var(--navy)}
+.tab.on{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 8px 22px -10px rgba(20,27,52,.5)}
+.tab.on small{color:#C9CCD8}
+.tab.on .ic{background:var(--yellow)}
 .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none}
 .ic.meta{background:#E9EAF0}.ic.google{background:var(--yellow-2)}.ic.linkedin{background:#E5EEF6}
-.sh h4{margin:0;font-size:16px;font-weight:700}
-.sh p{margin:2px 0 0;font-size:13px;color:var(--mute)}
-.sh .pct{margin-inline-start:auto;text-align:left}
-.sh .pct b{display:block;font-size:22px;font-weight:800}
-.sh .pct span{font-size:12px;color:var(--mute-2)}
+.sh h4{margin:0;font-size:18px;font-weight:800}
 
 
 /* platform cards */
@@ -131,7 +151,9 @@ tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--
 .foot .sig img{width:34px;height:34px;border-radius:50%}
 
 @media (max-width:1100px){.mini{grid-template-columns:repeat(4,1fr)}.mini div:nth-child(5){border-inline-start:0}.mini div:nth-child(-n+4){border-bottom:1px solid var(--hair-2)}}
-@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.share{grid-template-columns:1fr}}
+@media (max-width:1000px){.share{grid-template-columns:1fr}}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.tab{flex:1;min-width:0;padding:8px 10px}.tab small{display:none}.sh-stats b{font-size:20px}}
 @media (max-width:560px){
   .wrap{padding:0 16px}
   .mast{padding:18px 0 86px}
@@ -182,13 +204,14 @@ tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--
   <section class="kpis" id="kpis"></section>
 
   <section class="section">
-    <div class="sec-h"><div><h2>חלוקה לפי פלטפורמה</h2><p>חלק מההשקעה והלידים בתקופה הנבחרת</p></div></div>
+    <div class="sec-h"><div><h2>חלוקה לפי פלטפורמה</h2><p>חלק מההשקעה והלידים בתקופה הנבחרת · לחיצה על כרטיס פותחת את פירוט הפלטפורמה</p></div></div>
     <div class="share" id="share"></div>
   </section>
 
 
   <section class="section">
-    <div class="sec-h"><div><h2>פירוט קמפיינים וקורסים</h2><p>כל הקמפיינים שרצו בתקופה הנבחרת · לחיצה על כותרת עמודה ממיינת</p></div></div>
+    <div class="sec-h"><div><h2>פירוט קמפיינים וקורסים</h2><p>בחרו פלטפורמה · לחיצה על כותרת עמודה ממיינת</p></div></div>
+    <div class="tabs" id="tabs"></div>
     <div id="platforms"></div>
   </section>
 
@@ -223,7 +246,10 @@ const TYPE = {
 };
 
 const from = document.getElementById('from'), to = document.getElementById('to');
-let DATA, state = {key:'last30', from:null, to:null};
+let DATA, state = {key:'last30', from:null, to:null, tab:'meta'};
+try { const t = localStorage.getItem('fore-tab'); if (['meta','google','linkedin'].includes(t)) state.tab = t; } catch(e){}
+function setTab(p, scroll){ state.tab = p; try { localStorage.setItem('fore-tab', p); } catch(e){} render();
+  if (scroll) document.getElementById('tabs').scrollIntoView({behavior:'smooth', block:'start'}); }
 const sortBy = Object.fromEntries(PL.map(p => [p, ['s',-1]]));
 
 const nf = new Intl.NumberFormat('he-IL');
@@ -328,19 +354,36 @@ function render(){
       ${c.extra||''}
     </div>`).join('');
 
-  document.getElementById('share').innerHTML = PL.map(p => {
-    const o = by[p], sp = T.s ? o.s/T.s : 0, lp = T.l ? o.l/T.l : 0;
-    return `<div class="card sh"><div class="ic ${p}">${PLAT[p].icon}</div>
-      <div><h4>${PLAT[p].name}</h4><p><span class="num">${fmt.ils(o.s)}</span> · ${fmt.int(o.l)} לידים · עלות לליד <span class="num">${or(o.cpl,fmt.ils2)}</span></p></div>
-      <div class="pct"><b class="num">${Math.round(sp*100)}%</b><span>מההשקעה · ${Math.round(lp*100)}% מהלידים</span></div></div>`;
+  const shareEl = document.getElementById('share');
+  shareEl.innerHTML = PL.map(p => {
+    const o = by[p], sp = T.s ? o.s/T.s : 0, lp = T.l ? o.l/T.l : 0, c = PLAT[p].color;
+    return `<div class="card sh ${state.tab===p?'on':''}" data-tab="${p}" role="button" tabindex="0">
+      <div class="sh-h"><div class="ic ${p}">${PLAT[p].icon}</div><h4>${PLAT[p].name}</h4>
+        <span class="sh-share num" title="חלק מההשקעה">${Math.round(sp*100)}%</span></div>
+      <div class="sh-stats">
+        <div><span>השקעה</span><b class="num">${fmt.ils(o.s)}</b></div>
+        <div><span>לידים</span><b class="num">${fmt.int(o.l)}</b></div>
+        <div><span>עלות לליד</span><b class="num">${or(o.cpl,fmt.ils2)}</b></div>
+      </div>
+      <div class="sh-bars">
+        <div class="sh-bar"><span>מההשקעה</span><div class="tr"><i style="width:${sp*100}%;background:${c}"></i></div><b class="num">${Math.round(sp*100)}%</b></div>
+        <div class="sh-bar"><span>מהלידים</span><div class="tr"><i style="width:${lp*100}%;background:var(--c-leads)"></i></div><b class="num">${Math.round(lp*100)}%</b></div>
+      </div></div>`;
   }).join('');
+  shareEl.querySelectorAll('[data-tab]').forEach(el => { el.onclick = () => setTab(el.dataset.tab, true);
+    el.onkeydown = e => { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); setTab(el.dataset.tab, true); } }; });
+
+  const tabsEl = document.getElementById('tabs');
+  tabsEl.innerHTML = PL.map(p => `<button class="tab ${state.tab===p?'on':''}" data-tab="${p}" role="tab" aria-selected="${state.tab===p}">
+      <span class="ic ${p}">${PLAT[p].icon}</span><span><b>${PLAT[p].name}</b><small><span class="num">${fmt.ils(by[p].s)}</span> · ${fmt.int(by[p].l)} לידים</small></span></button>`).join('');
+  tabsEl.querySelectorAll('[data-tab]').forEach(el => el.onclick = () => setTab(el.dataset.tab));
 
   renderPlatforms(cur, by);
 }
 
 function renderPlatforms(cur, totals){
   const out = [];
-  for (const p of PL){
+  for (const p of [state.tab]){
     const byC = {};
     for (const r of cur) if (r.p===p){ const o = (byC[r.c] ||= {c:r.c,i:0,k:0,l:0,s:0}); o.i+=r.i;o.k+=r.k;o.l+=r.l;o.s+=r.s; }
     const list = Object.values(byC).map(derive);
@@ -364,7 +407,7 @@ function renderPlatforms(cur, totals){
         <td class="n num">${or(o.cr,fmt.pct)}</td></tr>`; }).join('');
     const mini = [['השקעה',fmt.ils(T.s)],['לידים',fmt.int(T.l)],['עלות לליד',or(T.cpl,fmt.ils2)],['אחוז המרה',or(T.cr,fmt.pct)],
                   ['חשיפות',fmt.int(T.i)],['Reach',R?or(tr_,fmt.int):'לא זמין'],['הקלקות',fmt.int(T.k)],['CTR',or(T.ctr,fmt.pct)]];
-    out.push(`<div class="card plat section">
+    out.push(`<div class="card plat">
       <div class="plat-h">
         <div class="plat-t"><div class="ic ${p}">${PLAT[p].icon}</div><div><h3>${PLAT[p].name}</h3><p>${PLAT[p].sub}</p></div></div>
         <span class="plat-badge">${list.length} קמפיינים פעילים בתקופה</span>
