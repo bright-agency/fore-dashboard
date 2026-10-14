@@ -78,9 +78,6 @@ main{margin-top:-60px;padding-bottom:56px;position:relative;z-index:2}
 .sec-h h2{margin:0;font-size:24px;font-weight:800;display:flex;align-items:center;gap:10px}
 .sec-h h2::before{content:"";width:6px;height:22px;border-radius:3px;background:var(--yellow)}
 .sec-h p{margin:2px 0 0;color:var(--mute-2);font-size:13.5px}
-.legend{display:flex;gap:14px;font-size:13px;color:var(--mute);flex-wrap:wrap}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
 
 .share{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .sh{padding:16px 18px;display:flex;align-items:center;gap:14px}
@@ -92,9 +89,6 @@ main{margin-top:-60px;padding-bottom:56px;position:relative;z-index:2}
 .sh .pct b{display:block;font-size:22px;font-weight:800}
 .sh .pct span{font-size:12px;color:var(--mute-2)}
 
-.chart{padding:18px 18px 8px;position:relative}
-.chart svg{width:100%;height:270px;display:block}
-.tip{position:absolute;pointer-events:none;background:var(--navy);color:#fff;border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.65;opacity:0;transition:opacity .1s;white-space:nowrap;z-index:5;box-shadow:0 10px 28px rgba(0,0,0,.25);border-top:3px solid var(--yellow)}
 
 /* platform cards */
 .plat{padding:0;overflow:hidden}
@@ -146,7 +140,6 @@ tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--
   .mini{grid-template-columns:repeat(2,1fr)}.mini div{border-bottom:1px solid var(--hair-2)}.mini div:nth-child(odd){border-inline-start:0}
   .custom{margin-inline-start:0;width:100%;justify-content:space-between}
   .custom input{width:40%}
-  .chart svg{height:220px}
 }
 @media print{.mast{padding-bottom:30px}main{margin-top:16px}.periods{display:none}.card{box-shadow:none}}
 </style>
@@ -193,18 +186,6 @@ tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--
     <div class="share" id="share"></div>
   </section>
 
-  <section class="section">
-    <div class="sec-h">
-      <div><h2>מגמה יומית</h2><p>השקעה יומית לפי פלטפורמה וכמות לידים</p></div>
-      <div class="legend">
-        <span><i style="background:var(--c-meta)"></i>Meta</span>
-        <span><i style="background:var(--c-google)"></i>Google</span>
-        <span><i style="background:var(--c-linkedin)"></i>LinkedIn</span>
-        <span><i style="background:var(--c-leads);height:3px;border-radius:2px"></i>לידים</span>
-      </div>
-    </div>
-    <div class="card chart"><svg id="chart" role="img" aria-label="גרף מגמה יומית"></svg><div class="tip" id="tip"></div></div>
-  </section>
 
   <section class="section">
     <div class="sec-h"><div><h2>פירוט קמפיינים וקורסים</h2><p>כל הקמפיינים שרצו בתקופה הנבחרת · לחיצה על כותרת עמודה ממיינת</p></div></div>
@@ -354,7 +335,6 @@ function render(){
       <div class="pct"><b class="num">${Math.round(sp*100)}%</b><span>מההשקעה · ${Math.round(lp*100)}% מהלידים</span></div></div>`;
   }).join('');
 
-  renderChart(cur, a, b);
   renderPlatforms(cur, by);
 }
 
@@ -407,51 +387,6 @@ function renderPlatforms(cur, totals){
   });
 }
 
-function renderChart(cur, a, b){
-  const svg = document.getElementById('chart'), tip = document.getElementById('tip');
-  const W = svg.clientWidth || 900, H = svg.clientHeight || 270;
-  const pad = {t:14, r:44, b:28, l:54};
-  const dates = []; for (let d=a; d<=b; d=addDays(d,1)) dates.push(d);
-  const by = Object.fromEntries(dates.map(d => [d,{meta:0,google:0,linkedin:0,l:0}]));
-  for (const r of cur){ const o = by[r.d]; if(!o) continue; o[r.p]+=r.s; o.l+=r.l; }
-  const S = dates.map(d=>by[d]), tot = o => o.meta+o.google+o.linkedin;
-  const maxS = niceMax(Math.max(1,...S.map(tot))), maxL = niceMax(Math.max(1,...S.map(o=>o.l)));
-  const iw = W-pad.l-pad.r, ih = H-pad.t-pad.b, bw = iw/dates.length;
-  const x = i => pad.l + i*bw, yS = v => pad.t + ih - v/maxS*ih, yL = v => pad.t + ih - v/maxL*ih;
-  let g = '';
-  for (let i=0;i<=5;i++){ const y = yS(maxS*i/5);
-    g += `<line x1="${pad.l}" x2="${W-pad.r}" y1="${y}" y2="${y}" stroke="#E4E4E0" ${i?'stroke-dasharray="3 4"':''}/>`;
-    g += `<text x="${pad.l-8}" y="${y+4}" text-anchor="end" font-size="11.5" fill="#7A7A72">₪${compact(maxS*i/5)}</text>`;
-    g += `<text x="${W-pad.r+8}" y="${y+4}" text-anchor="start" font-size="11.5" fill="#1F9D57">${compact(maxL*i/5)}</text>`;
-  }
-  const gap = Math.min(4, bw*0.25), w = Math.max(1, bw-gap);
-  S.forEach((o,i) => { let base = 0;
-    for (const p of PL){ if (!o[p]) continue; const y0 = yS(base), y1 = yS(base+o[p]);
-      g += `<rect x="${x(i)+gap/2}" y="${y1}" width="${w}" height="${Math.max(0,y0-y1)}" fill="${PLAT[p].color}"/>`; base += o[p]; }
-  });
-  g += `<polyline points="${S.map((o,i)=>`${x(i)+bw/2},${yL(o.l)}`).join(' ')}" fill="none" stroke="#1F9D57" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
-  if (dates.length <= 45) S.forEach((o,i) => g += `<circle cx="${x(i)+bw/2}" cy="${yL(o.l)}" r="3" fill="#fff" stroke="#1F9D57" stroke-width="2"/>`);
-  const step = Math.ceil(dates.length / Math.max(2, Math.floor(iw/70)));
-  dates.forEach((d,i) => { if (i%step===0)
-    g += `<text x="${x(i)+bw/2}" y="${H-8}" text-anchor="middle" font-size="11.5" fill="#7A7A72">${fmt.date(d).replace(/\.\d+$/,'')}</text>`; });
-  g += `<rect id="hov" x="0" y="${pad.t}" width="${bw}" height="${ih}" fill="#141B34" opacity="0"/>`;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  svg.innerHTML = g;
-  const hov = svg.querySelector('#hov');
-  svg.onmousemove = e => {
-    const rc = svg.getBoundingClientRect(), i = Math.floor(((e.clientX-rc.left)*W/rc.width - pad.l)/bw);
-    if (i<0 || i>=dates.length){ tip.style.opacity=0; hov.setAttribute('opacity',0); return; }
-    const o = S[i];
-    hov.setAttribute('x', x(i)); hov.setAttribute('opacity', .05);
-    tip.innerHTML = `<b>${fmt.date(dates[i])}</b><br>${PL.map(p=>`${PLAT[p].name.split(' ')[0]}: ${fmt.ils(o[p])}`).join('<br>')}<br>לידים: <b>${fmt.int(o.l)}</b>`;
-    const cx = (x(i)+bw/2)*rc.width/W + 18;
-    tip.style.left = Math.max(6, Math.min(cx + 12, rc.width - tip.offsetWidth + 6)) + 'px';
-    tip.style.top = '24px'; tip.style.opacity = 1;
-  };
-  svg.onmouseleave = () => { tip.style.opacity=0; hov.setAttribute('opacity',0); };
-}
-function niceMax(v){ const p = Math.pow(10, Math.floor(Math.log10(v))), n = v/p; return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p; }
-function compact(v){ return v>=1000 ? (v/1000).toFixed(1).replace(/\.0$/,'')+'K' : String(Math.round(v*10)/10); }
 
 function setKey(k){
   state.key = k;
@@ -476,7 +411,6 @@ fetch('data.json?v=' + Date.now()).then(r => r.json()).then(d => {
   from.onchange = onCustom; to.onchange = onCustom;
   let saved = null; try { saved = localStorage.getItem('fore-period'); } catch(e){}
   setKey(saved && d.presets[saved] ? saved : 'last30');
-  let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(render, 120); });
 }).catch(() => {
   document.getElementById('kpis').innerHTML = '<div class="card empty" style="grid-column:1/-1">לא ניתן לטעון את הנתונים כרגע. נסו לרענן את הדף.</div>';
 });
