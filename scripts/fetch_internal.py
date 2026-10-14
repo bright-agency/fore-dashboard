@@ -10,7 +10,7 @@ import gzip
 import json
 import os
 import sys
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -82,7 +82,37 @@ def write_config() -> dict:
     repo = os.environ.get("GITHUB_REPOSITORY", "").strip()
     if not tok or not repo:
         return None
-    return {"repo": repo, "path": "team/budgets.enc.json", "branch": "main", "token": tok}
+    cfg = {"repo": repo, "path": "team/budgets.enc.json", "branch": "main", "token": tok, "ok": False, "expires": None}
+    # Verify the token: it must reach this repo with write (push) permission. GitHub reports its expiry in a header.
+    import urllib.error
+    import urllib.request
+    req = urllib.request.Request(f"https://api.github.com/repos/{repo}", headers={
+        "Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json", "User-Agent": "fore-dashboard"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            perms = json.load(r).get("permissions", {})
+            exp = r.headers.get("github-authentication-token-expiration")   # e.g. "2027-10-14 12:53:41 UTC"
+        cfg["ok"] = bool(perms.get("push"))
+        cfg["expires"] = exp.replace(" UTC", "").replace(" ", "T") + "Z" if exp else None
+        print(f"write token: push={cfg['ok']} expires={cfg['expires'] or 'never'}")
+    except urllib.error.HTTPError as e:
+        print(f"write token check failed: HTTP {e.code}")
+    return cfg
+
+
+def token_alerts(cfg) -> list:
+    """Alerts about the budget-saving token (shown in the team page)."""
+    if not cfg:
+        return []
+    if not cfg["ok"]:
+        return [{"sev": "high", "type": "token_invalid",
+                 "msg": "הטוקן לשמירת תקציבים לא תקין או בלי הרשאת כתיבה – שמירת תקציבים לא תעבוד. יש ליצור טוקן חדש (TEAM_WRITE_TOKEN)."}]
+    if cfg["expires"]:
+        left = (datetime.fromisoformat(cfg["expires"].replace("Z", "+00:00")) - datetime.now(timezone.utc)).days
+        if left <= 30:
+            return [{"sev": "high" if left <= 7 else "med", "type": "token_expiry", "value": left,
+                     "msg": f"הטוקן לשמירת תקציבים יפוג בעוד {max(left, 0)} ימים ({cfg['expires'][:10]}) – יש ליצור טוקן חדש ולעדכן את TEAM_WRITE_TOKEN."}]
+    return []
 
 
 def write_outputs(payload: dict) -> None:
@@ -125,6 +155,7 @@ def main():
     print("manual budgets:", len(budgets))
     payload = internal.build(client, raw, fx, now, budgets)
     payload["meta"]["write"] = write_config()
+    payload["alerts"] = token_alerts(payload["meta"]["write"]) + payload["alerts"]
     print("budget editing:", "enabled" if payload["meta"]["write"] else "disabled (no TEAM_WRITE_TOKEN)")
     from collections import Counter
     print("unit links:", dict(Counter((u["p"], ",".join(sorted(u["links"]))) for u in payload["units"])))
