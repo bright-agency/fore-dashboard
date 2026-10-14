@@ -25,11 +25,20 @@ jobs:
         env:
           WINDSOR_API_KEY: ${{ secrets.WINDSOR_API_KEY }}
         run: python scripts/fetch_windsor.py
-      - name: Commit data.json
+      - name: Build team dashboard data (encrypted)
+        continue-on-error: true   # never block the client dashboard refresh
+        env:
+          WINDSOR_API_KEY: ${{ secrets.WINDSOR_API_KEY }}
+          INTERNAL_PASSWORD: ${{ secrets.INTERNAL_PASSWORD }}
+        run: |
+          pip install -q cryptography
+          python scripts/fetch_internal.py
+      - name: Commit data
         run: |
           git config user.name "fore-dashboard-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data.json
+          if [ -f team/data.enc.json ]; then git add team/data.enc.json; fi
           git diff --cached --quiet && echo "no changes" && exit 0
           git commit -m "data: refresh $(date -u +%Y-%m-%d)"
           git push

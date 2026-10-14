@@ -7,10 +7,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "data.json"
 
-META_ACCOUNT = "692135214662669"      # IDC executive education
-GOOGLE_ACCOUNT = "521-257-8242"       # FORE אוניברסיטת רייכמן - לימודי חוץ
-LINKEDIN_ACCOUNT = "509671992"        # Reichman University - Executive Education (billed in USD)
-HISTORY_START = date(2026, 1, 1)
+# Per-client settings live in scripts/client.json (copy this repo + edit it for a new client).
+CONFIG = json.loads((Path(__file__).resolve().parent / "client.json").read_text(encoding="utf-8"))
+META_ACCOUNT = CONFIG["accounts"]["meta"]
+GOOGLE_ACCOUNT = CONFIG["accounts"]["google"]
+LINKEDIN_ACCOUNT = CONFIG["accounts"]["linkedin"]   # billed in USD
+HISTORY_START = date.fromisoformat(CONFIG["history_start"])
 
 _INVISIBLE = re.compile(r"[‎‏‪-‮⁦-⁩﻿]")
 
