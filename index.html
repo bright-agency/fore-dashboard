@@ -123,25 +123,36 @@ main{margin-top:-60px;padding-bottom:56px;position:relative;z-index:2}
 .mini span{display:block;font-size:12.5px;color:var(--mute-2)}
 .mini b{display:block;font-size:19px;font-weight:800;margin-top:1px}
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:1000px}
-th{font-weight:600;color:var(--mute-2);font-size:13px;text-align:start;padding:11px 14px;background:#fff;border-bottom:1px solid var(--hair);white-space:nowrap;cursor:pointer;user-select:none}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px;min-width:1040px}
+th{font-weight:700;color:var(--navy);font-size:13px;text-align:start;padding:12px 14px;background:#EEF0F4;border-bottom:2px solid #D9DCE6;white-space:nowrap;cursor:pointer;user-select:none}
 th:hover{color:var(--ink)}
 th.sorted{color:var(--ink);font-weight:700}
 th.sorted::after{content:" ▾";font-size:10px}
 th.sorted.asc::after{content:" ▴"}
 td{padding:13px 14px;border-bottom:1px solid var(--hair-2);white-space:nowrap}
-tbody tr:hover{background:#FCFBF5}
+th+th,td+td{border-inline-start:1px solid #EEEEEA}
+tbody tr:nth-child(even) td{background:#FAFAF7}
+tbody td.n:nth-child(even){background-image:linear-gradient(rgba(20,27,52,.025),rgba(20,27,52,.025))}
+th.hl{background:#FBF1C4}
+td.hl{background-image:linear-gradient(rgba(251,221,92,.16),rgba(251,221,92,.16))!important}
+tbody tr:hover td{background-color:#F3F6FB}
 tbody tr:last-child td{border-bottom:0}
-td.n,th.n{text-align:left}
+td.n,th.n{text-align:center}
 .course{white-space:normal;min-width:260px;max-width:380px}
 .course b{font-weight:700;display:block;line-height:1.35}
 .tags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
 .tag{font-size:11.5px;padding:1px 8px;border-radius:6px;background:var(--hair-2);color:var(--mute)}
 .tag.t-lead{background:var(--good-bg);color:#17784A}.tag.t-brand{background:var(--yellow-2);color:#7A5A00}.tag.t-search{background:#E9EAF0;color:var(--navy)}
+.st{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:1px 9px 1px 8px;border-radius:999px;margin-bottom:5px}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.live{background:var(--good-bg);color:#17784A}.st.live::before{box-shadow:0 0 0 3px rgba(31,157,87,.18)}
+.st.paused{background:#FDF3C7;color:#8A6400}
+.st.ended{background:var(--hair-2);color:var(--mute)}
+tr.is-ended .course b{color:var(--mute)}
 .tag.t-date{background:transparent;border:1px solid var(--hair);color:var(--mute-2)}
-.bar{height:4px;border-radius:4px;background:var(--hair-2);margin-top:6px;overflow:hidden;width:90px}
+.bar{height:4px;border-radius:4px;background:var(--hair-2);margin:6px auto 0;overflow:hidden;width:90px}
 .bar i{display:block;height:100%}
-tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--hair);border-bottom:0}
+tfoot td{font-weight:800;background:#EEF0F4!important;border-top:2px solid #D9DCE6;border-bottom:0}
 .muted{color:var(--mute-2)}
 .empty{padding:28px;text-align:center;color:var(--mute-2)}
 .foot{margin-top:32px;padding-top:18px;border-top:1px solid var(--hair);color:var(--mute-2);font-size:13px;line-height:1.75;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
@@ -153,15 +164,69 @@ tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--
 @media (max-width:1100px){.mini{grid-template-columns:repeat(4,1fr)}.mini div:nth-child(5){border-inline-start:0}.mini div:nth-child(-n+4){border-bottom:1px solid var(--hair-2)}}
 @media (max-width:1000px){.share{grid-template-columns:1fr}}
 @media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:560px){.tab{flex:1;min-width:0;padding:8px 10px}.tab small{display:none}.sh-stats b{font-size:20px}}
 @media (max-width:560px){
   .wrap{padding:0 16px}
   .mast{padding:18px 0 86px}
   .client{gap:12px}.client-logo{padding:8px 10px}.client-logo img{height:34px}.title h1{font-size:24px}
   .kpi .val{font-size:26px}.kpi{padding:14px 14px 12px}
   .mini{grid-template-columns:repeat(2,1fr)}.mini div{border-bottom:1px solid var(--hair-2)}.mini div:nth-child(odd){border-inline-start:0}
-  .custom{margin-inline-start:0;width:100%;justify-content:space-between}
-  .custom input{width:40%}
+  /* header */
+  .top{gap:14px}
+  .client{width:100%;justify-content:space-between}
+  .title{order:-1}
+  .agency{width:100%;justify-content:space-between;flex-direction:row-reverse;border-top:1px solid rgba(255,255,255,.1);padding-top:12px}
+  .agency img{width:36px;height:36px}
+  .agency .t b{text-align:left}
+  /* periods: one swipeable row + date range below */
+  .periods{flex-wrap:nowrap;overflow-x:auto;margin:20px -16px 0;padding:0 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .periods::-webkit-scrollbar{display:none}
+  .chip{flex:none;padding:7px 14px;font-size:14px}
+  .custom{flex:none;margin-inline-start:0}
+  .custom span:first-child{display:none}
+  .custom input{width:128px;padding:5px 8px}
+  .range{font-size:12.5px;line-height:1.6}
+  /* KPI */
+  .kpis{gap:10px}
+  .kpi .lbl{font-size:13px}
+  .kpi .sub span{display:none}
+  .plist{gap:4px 10px;font-size:11.5px}
+  /* share cards */
+  .sh{padding:14px 14px 12px}
+  .sh-stats b{font-size:19px}
+  .sh-stats div+div{padding-inline-start:10px}
+  .sh-bar{grid-template-columns:62px 1fr 36px}
+  /* tabs: 3 equal buttons */
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .tab{flex-direction:column;gap:6px;padding:10px 6px;text-align:center}
+  .tab b{font-size:13.5px;text-align:center}
+  .tab small{display:none}
+  /* platform card */
+  .plat-h{padding:14px 16px}
+  .plat-t h3{font-size:19px}
+  .plat-badge{font-size:12px}
+  .mini div{padding:12px 14px}
+  .mini b{font-size:17px}
+  /* campaign table -> cards */
+  .tbl-wrap{overflow:visible}
+  table{min-width:0;font-size:14px}
+  thead,tfoot{display:none}
+  table,tbody,tr,td{display:block;width:100%}
+  tbody tr{padding:14px 16px;border-bottom:8px solid var(--bg);display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px}
+  tbody tr:last-child{border-bottom:0}
+  tbody tr:hover{background:transparent}
+  td{padding:0;border:0;white-space:normal;direction:rtl;text-align:right!important}
+  td.course{grid-column:1/-1;max-width:none;min-width:0;padding-bottom:8px;border-bottom:1px solid var(--hair-2)}
+  td[data-l]::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--mute-2);font-weight:600;margin-bottom:1px}
+  td[data-l]{font-weight:700;font-size:15px}
+  td.hl{color:var(--ink)}
+  td .bar{width:100%;max-width:90px}
+  /* key numbers first: spend, leads, CPL */
+  td[data-l="השקעה"]{order:1}td[data-l="לידים"]{order:2}td[data-l="עלות לליד"]{order:3}
+  td[data-l="חשיפות"]{order:4}td[data-l="הקלקות"]{order:5}td[data-l="CTR"]{order:6}
+  td[data-l="Reach"]{order:7}td[data-l="אחוז המרה"]{order:8}
+  td.hl{background:var(--yellow-soft)!important;border-radius:8px;padding:4px 8px}
+  td,td+td{border-inline-start:0}
+  tbody tr:nth-child(even) td,tbody td.n:nth-child(even){background:none}
 }
 @media print{.mast{padding-bottom:30px}main{margin-top:16px}.periods{display:none}.card{box-shadow:none}}
 </style>
@@ -223,6 +288,7 @@ tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--
       השקעת LinkedIn מחויבת בדולר ומומרת לשקלים לפי השער היומי.
       Reach (חשיפה ייחודית) זמין ב-Meta וב-LinkedIn ומוצג לתקופות המוגדרות מראש; ה-Reach הכולל הוא סכום שתי הפלטפורמות.
       ההשוואה מתייחסת לתקופה הקודמת המקבילה.
+      סטטוס הקמפיין (באוויר / מושהה / הסתיים) מציג את המצב הנוכחי שלו, נכון לעדכון האחרון.
     </div>
     <div class="sig"><img src="assets/bright-logo.png" alt=""><span>הופק ע"י <b>BRIGHT</b></span></div>
   </div>
@@ -265,6 +331,8 @@ const iso = d => d.toISOString().slice(0,10);
 const addDays = (s,n) => { const d = new Date(s+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return iso(d); };
 const days = (a,b) => Math.round((new Date(b+'T00:00:00Z') - new Date(a+'T00:00:00Z'))/864e5) + 1;
 const or = (v,f,dash='—') => v==null ? dash : f(v);
+const ST = {live:'באוויר', paused:'מושהה', ended:'הסתיים'};
+const statusOf = (p,c) => (DATA.status && DATA.status[p] && DATA.status[p][c]) || null;
 
 function parseCampaign(raw){
   const parts = (raw.includes('|') ? raw.split('|') : raw.split(' - ')).map(s=>s.trim()).filter(Boolean);
@@ -394,30 +462,30 @@ function renderPlatforms(cur, totals){
     const T = totals[p], maxS = Math.max(1, ...list.map(o=>o.s)), R = PLAT[p].reach, tr_ = reachFor(p);
     const cols = [['c','קמפיין / קורס',0],['s','השקעה',1],['i','חשיפות',1],...(R?[['r','Reach',1]]:[]),
                   ['k',PLAT[p].clicks,1],['ctr','CTR',1],['l','לידים',1],['cpl','עלות לליד',1],['cr','אחוז המרה',1]];
-    const th = cols.map(([k,l,n]) => `<th class="${n?'n':''} ${key===k?'sorted'+(dir>0?' asc':''):''}" data-plat="${p}" data-k="${k}">${l}</th>`).join('');
-    const rows = list.map(o => { const pc = parseCampaign(o.c); return `<tr>
-        <td class="course" title="${esc(o.c)}"><b>${esc(pc.name)}</b><div class="tags">${pc.tags.map(([t,c])=>`<span class="tag ${c}">${esc(t)}</span>`).join('')}</div></td>
-        <td class="n"><span class="num">${fmt.ils(o.s)}</span><div class="bar"><i style="width:${o.s/maxS*100}%;background:${PLAT[p].color}"></i></div></td>
-        <td class="n num">${fmt.int(o.i)}</td>
-        ${R?`<td class="n num">${or(o.r,fmt.int,'<span class="muted">—</span>')}</td>`:''}
-        <td class="n num">${fmt.int(o.k)}</td>
-        <td class="n num">${or(o.ctr,fmt.pct)}</td>
-        <td class="n num"><b>${fmt.int(o.l)}</b></td>
-        <td class="n num">${or(o.cpl,fmt.ils2,'<span class="muted">—</span>')}</td>
-        <td class="n num">${or(o.cr,fmt.pct)}</td></tr>`; }).join('');
+    const th = cols.map(([k,l,n]) => `<th class="${n?'n':''} ${k==='l'||k==='cpl'?'hl':''} ${key===k?'sorted'+(dir>0?' asc':''):''}" data-plat="${p}" data-k="${k}">${l}</th>`).join('');
+    const rows = list.map(o => { const pc = parseCampaign(o.c), st = statusOf(p, o.c); return `<tr class="${st?'is-'+st:''}">
+        <td class="course" title="${esc(o.c)}">${st?`<span class="st ${st}">${ST[st]}</span>`:''}<b>${esc(pc.name)}</b><div class="tags">${pc.tags.map(([t,c])=>`<span class="tag ${c}">${esc(t)}</span>`).join('')}</div></td>
+        <td class="n" data-l="השקעה"><span class="num">${fmt.ils(o.s)}</span><div class="bar"><i style="width:${o.s/maxS*100}%;background:${PLAT[p].color}"></i></div></td>
+        <td class="n num" data-l="חשיפות">${fmt.int(o.i)}</td>
+        ${R?`<td class="n num" data-l="Reach">${or(o.r,fmt.int,'<span class="muted">—</span>')}</td>`:''}
+        <td class="n num" data-l="הקלקות">${fmt.int(o.k)}</td>
+        <td class="n num" data-l="CTR">${or(o.ctr,fmt.pct)}</td>
+        <td class="n num hl" data-l="לידים"><b>${fmt.int(o.l)}</b></td>
+        <td class="n num hl" data-l="עלות לליד">${or(o.cpl,fmt.ils2,'<span class="muted">—</span>')}</td>
+        <td class="n num" data-l="אחוז המרה">${or(o.cr,fmt.pct)}</td></tr>`; }).join('');
     const mini = [['השקעה',fmt.ils(T.s)],['לידים',fmt.int(T.l)],['עלות לליד',or(T.cpl,fmt.ils2)],['אחוז המרה',or(T.cr,fmt.pct)],
                   ['חשיפות',fmt.int(T.i)],['Reach',R?or(tr_,fmt.int):'לא זמין'],['הקלקות',fmt.int(T.k)],['CTR',or(T.ctr,fmt.pct)]];
     out.push(`<div class="card plat">
       <div class="plat-h">
         <div class="plat-t"><div class="ic ${p}">${PLAT[p].icon}</div><div><h3>${PLAT[p].name}</h3><p>${PLAT[p].sub}</p></div></div>
-        <span class="plat-badge">${list.length} קמפיינים פעילים בתקופה</span>
+        <span class="plat-badge">${list.length} קמפיינים בתקופה · ${list.filter(o=>statusOf(p,o.c)==='live').length} באוויר כעת</span>
       </div>
       <div class="mini">${mini.map(([l,v])=>`<div><span>${l}</span><b class="num">${v}</b></div>`).join('')}</div>
       ${list.length ? `<div class="tbl-wrap"><table><thead><tr>${th}</tr></thead><tbody>${rows}</tbody>
         <tfoot><tr><td>סה"כ ${PLAT[p].name}</td><td class="n num">${fmt.ils(T.s)}</td><td class="n num">${fmt.int(T.i)}</td>
         ${R?`<td class="n num">${or(tr_,fmt.int)}</td>`:''}
-        <td class="n num">${fmt.int(T.k)}</td><td class="n num">${or(T.ctr,fmt.pct)}</td><td class="n num">${fmt.int(T.l)}</td>
-        <td class="n num">${or(T.cpl,fmt.ils2)}</td><td class="n num">${or(T.cr,fmt.pct)}</td></tr></tfoot></table></div>`
+        <td class="n num">${fmt.int(T.k)}</td><td class="n num">${or(T.ctr,fmt.pct)}</td><td class="n num hl">${fmt.int(T.l)}</td>
+        <td class="n num hl">${or(T.cpl,fmt.ils2)}</td><td class="n num">${or(T.cr,fmt.pct)}</td></tr></tfoot></table></div>`
         : `<div class="empty">אין פעילות בפלטפורמה זו בתקופה הנבחרת</div>`}
     </div>`);
   }

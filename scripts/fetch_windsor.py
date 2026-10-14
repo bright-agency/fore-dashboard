@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(__file__))
-from common import (GOOGLE_ACCOUNT, HISTORY_START, LINKEDIN_ACCOUNT, META_ACCOUNT,  # noqa: E402
+from common import (GOOGLE_ACCOUNT, campaign_status, HISTORY_START, LINKEDIN_ACCOUNT, META_ACCOUNT,  # noqa: E402
                     fx_lookup, google_row, linkedin_row, meta_row, presets, write_data)
 
 API = "https://connectors.windsor.ai/{connector}"
@@ -76,9 +76,22 @@ def main():
             "linkedin": reach_block("linkedin", LINKEDIN_ACCOUNT, "approximate_unique_impressions", a, b),
         }
 
+    # Current campaign status (live / paused / ended)
+    status = {
+        "meta": {r["campaign"]: campaign_status(r.get("campaign_effective_status"), r.get("campaign_stop_time"), as_of)
+                 for r in get("facebook", META_ACCOUNT, ["campaign", "campaign_effective_status", "campaign_stop_time"],
+                              HISTORY_START, as_of) if r.get("campaign")},
+        "google": {r["campaign"]: campaign_status(r.get("campaign_status"), None, as_of)
+                   for r in get("google_ads", GOOGLE_ACCOUNT, ["campaign", "campaign_status"], HISTORY_START, as_of)
+                   if r.get("campaign")},
+        "linkedin": {r["campaign"]: campaign_status(r.get("campaign_status"), r.get("campaign_end_date"), as_of)
+                     for r in get("linkedin", LINKEDIN_ACCOUNT, ["campaign", "campaign_status", "campaign_end_date"],
+                                  HISTORY_START, as_of) if r.get("campaign")},
+    }
+
     if not rows:
         sys.exit("Windsor returned no rows - keeping previous data.json")
-    write_data(as_of, rows, reach, now.isoformat(timespec="minutes"))
+    write_data(as_of, rows, reach, now.isoformat(timespec="minutes"), status)
 
 
 if __name__ == "__main__":

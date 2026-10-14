@@ -9,7 +9,7 @@ from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, os.path.dirname(__file__))
-from common import fx_lookup, google_row, linkedin_row, meta_row, write_data  # noqa: E402
+from common import campaign_status, fx_lookup, google_row, linkedin_row, meta_row, write_data  # noqa: E402
 
 g, m, li, fxp, as_of = sys.argv[1:6]
 load = lambda p: json.load(open(p, encoding="utf-8"))["result"]
@@ -19,4 +19,7 @@ rows = ([google_row(r) for r in load(g)] + [meta_row(r) for r in load(m)]
 seed = json.load(open(os.path.join(os.path.dirname(__file__), "reach_seed.json"), encoding="utf-8"))
 li_tot = seed.pop("_linkedin_totals")
 reach = {k: {"meta": v, "linkedin": {"total": li_tot[k], "by": {}}} for k, v in seed.items()}
-write_data(date.fromisoformat(as_of), rows, reach, datetime.now(ZoneInfo("Asia/Jerusalem")).isoformat(timespec="minutes"))
+as_of = date.fromisoformat(as_of)
+st_seed = json.load(open(os.path.join(os.path.dirname(__file__), "status_seed.json"), encoding="utf-8"))
+status = {p: {n: campaign_status(st, end, as_of) for n, st, end in lst} for p, lst in st_seed.items()}
+write_data(as_of, rows, reach, datetime.now(ZoneInfo("Asia/Jerusalem")).isoformat(timespec="minutes"), status)

@@ -91,7 +91,19 @@ def linkedin_row(r: dict, fx) -> dict:
     }
 
 
-def write_data(as_of: date, rows: list, reach: dict, updated_iso: str) -> None:
+def campaign_status(raw: str, end, as_of: date) -> str:
+    """Normalise platform status to live / paused / ended. end = 'YYYY-MM-DD...' or None."""
+    raw = (raw or "").upper()
+    if raw in ("COMPLETED", "REMOVED", "ARCHIVED", "DELETED", "CANCELED"):
+        return "ended"
+    if end and str(end)[:10] <= as_of.isoformat():
+        return "ended"
+    if raw in ("ACTIVE", "ENABLED"):
+        return "live"
+    return "paused"
+
+
+def write_data(as_of: date, rows: list, reach: dict, updated_iso: str, status: dict = None) -> None:
     rows = [r for r in rows if r["i"] or r["k"] or r["l"] or r["s"]]
     rows.sort(key=lambda r: (r["d"], r["p"], r["c"]))
     pr = presets(as_of)
@@ -103,6 +115,8 @@ def write_data(as_of: date, rows: list, reach: dict, updated_iso: str) -> None:
         "reach": {k: {p: {"total": v["total"], "by": {clean(n): x for n, x in v.get("by", {}).items()}}
                       for p, v in plats.items()}
                   for k, plats in reach.items()},
+        # status[platform][campaign] = live | paused | ended (current state, not per period)
+        "status": {p: {clean(c): v for c, v in m.items()} for p, m in (status or {}).items()},
         "rows": rows,
     }
     DATA_FILE.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
