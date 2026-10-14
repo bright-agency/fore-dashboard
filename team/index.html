@@ -144,6 +144,16 @@ tbody tr:last-child td{border-bottom:0}
 .lk a.pv{background:var(--yellow-soft);border-color:var(--yellow-2)}
 a.cl{color:inherit;text-decoration:none}a.cl:hover{text-decoration:underline}a.cl::after{content:' ↗';font-size:11px;color:var(--mute-2)}
 .ad a img{display:block}
+.bedit{border:1px solid #D9DCE6;background:#fff;border-radius:8px;padding:0 8px;font-size:12px;font-weight:700;cursor:pointer;color:var(--navy);margin-inline-start:6px;vertical-align:middle}
+.bedit:hover{background:var(--yellow);border-color:var(--yellow)}
+.bsrc{font-size:10.5px;font-weight:700;padding:0 6px;border-radius:5px;margin-inline-start:4px;vertical-align:middle}
+.bsrc.manual{background:var(--good-bg);color:#17784A}.bsrc.name{background:var(--hair-2);color:var(--mute)}
+.bform{display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap}
+.bform input{width:120px;font:inherit;font-size:15px;font-weight:700;padding:5px 8px;border:2px solid var(--yellow);border-radius:9px;direction:ltr;text-align:center}
+.bform button{border:0;border-radius:9px;padding:6px 12px;font-weight:700;cursor:pointer}
+.bform .ok{background:var(--navy);color:#fff}.bform .no{background:var(--hair-2);color:var(--mute)}.bform .rm{background:transparent;color:var(--bad);text-decoration:underline;padding:6px 4px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;font-weight:600;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.25);border-top:3px solid var(--yellow);opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}.toast.err{border-top-color:var(--bad)}
 .more{display:block;margin:-8px auto 16px;border:1px solid var(--hair);background:#fff;border-radius:999px;padding:5px 16px;cursor:pointer;font-weight:600;color:var(--mute)}
 .picon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;vertical-align:middle;margin-inline-end:6px}
 .picon svg{width:13px;height:13px}
@@ -181,6 +191,7 @@ a.cl{color:inherit;text-decoration:none}a.cl:hover{text-decoration:underline}a.c
 </style>
 </head>
 <body>
+<div class="toast" id="toast"></div>
 <div class="gate" id="gate">
   <form id="gateForm" autocomplete="off">
     <img src="../assets/bright-logo.png" alt="BRIGHT">
@@ -274,6 +285,7 @@ const he = s => DIM_HE[s] || s;
 
 const $ = id => document.getElementById(id);
 const from = $('from'), to = $('to');
+let PW = null, BUD = {}, BUD_SHA = null, LIFE = null;
 let D, DAY, state = {key:'last30', from:null, to:null, alert:'all', courseFilter:'active', bdPlat:'meta', bdCourse:'live', open:new Set(), more:new Set()};
 
 const nf = new Intl.NumberFormat('he-IL');
@@ -323,7 +335,7 @@ async function boot(){
   try { enc = await (await fetch('data.enc.json?v='+Date.now())).json(); }
   catch(e){ $('err').textContent = 'הנתונים עדיין לא זמינים. נסו שוב מאוחר יותר.'; return; }
   const tryPw = async pw => {
-    try { const d = await decrypt(enc, pw); try { sessionStorage.setItem('fore-team', pw); } catch(e){} start(d); return true; }
+    try { const d = await decrypt(enc, pw); PW = pw; try { sessionStorage.setItem('fore-team', pw); } catch(e){} await start(d); return true; }
     catch(e){ return false; }
   };
   let saved = null; try { saved = sessionStorage.getItem('fore-team'); } catch(e){}
@@ -338,7 +350,7 @@ async function boot(){
 }
 $('lock').onclick = () => { try { sessionStorage.removeItem('fore-team'); } catch(e){} location.reload(); };
 
-function start(d){
+async function start(d){
   D = d; DAY = d.days;
   $('gate').classList.add('hide'); $('app').hidden = false;
   $('asOf').textContent = fmt.date(d.meta.asOf);
@@ -349,6 +361,8 @@ function start(d){
   const onCustom = () => { if (!from.value || !to.value) return; if (from.value > to.value) [from.value,to.value] = [to.value,from.value];
     state.from = from.value; state.to = to.value; setKey('custom'); };
   from.onchange = onCustom; to.onchange = onCustom;
+  precompute();
+  await loadBudgets();
   setKey('last30');
 }
 function setKey(k){
@@ -383,7 +397,7 @@ function render(){
   $('kpis').innerHTML = [
     ['השקעה', fmt.ils(T.s), dl(T.s,P.s,null)], ['לידים', fmt.int(T.l), dl(T.l,P.l)], ['עלות לליד', or(T.cpl,fmt.ils2), dl(T.cpl,P.cpl,true)],
     ['אחוז המרה', or(T.cr,fmt.pct), dl(T.cr,P.cr)], ['קורסים פעילים', fmt.int(activeCourses), `<small>${liveCamps} קמפיינים באוויר</small>`],
-    ['התראות', fmt.int(D.alerts.length), `<small>${D.alerts.filter(x=>x.sev==='high').length} דחופות</small>`]
+    ['התראות', fmt.int(allAlerts().length), `<small>${allAlerts().filter(x=>x.sev==='high').length} דחופות</small>`]
   ].map(([l,v,s]) => `<div class="card kpi"><span>${l}</span><b class="num">${v}</b>${s||''}</div>`).join('');
 
   renderAlerts();
@@ -392,11 +406,12 @@ function render(){
 }
 
 function renderAlerts(){
-  const counts = {all:D.alerts.length}; D.alerts.forEach(a => counts[a.sev] = (counts[a.sev]||0)+1);
+  const AL = allAlerts();
+  const counts = {all:AL.length}; AL.forEach(a => counts[a.sev] = (counts[a.sev]||0)+1);
   $('alertSeg').innerHTML = [['all','הכל'],['high','דחוף'],['med','לבדיקה'],['info','לידיעה']]
     .map(([k,l]) => `<button class="${state.alert===k?'on':''}" data-k="${k}">${l}<span class="c">${counts[k]||0}</span></button>`).join('');
   $('alertSeg').querySelectorAll('button').forEach(b => b.onclick = () => { state.alert = b.dataset.k; renderAlerts(); });
-  const list = D.alerts.filter(a => state.alert==='all' || a.sev===state.alert);
+  const list = AL.filter(a => state.alert==='all' || a.sev===state.alert);
   $('alerts').innerHTML = list.length ? list.map(a => {
     const c = a.campaign!=null ? D.campaigns[a.campaign] : null, co = a.course!=null ? D.courses[a.course] : null;
     return `<div class="card al ${a.sev}">
@@ -407,13 +422,131 @@ function renderAlerts(){
   }).join('') : `<div class="card empty" style="grid-column:1/-1">אין התראות בקטגוריה הזו 🎉</div>`;
 }
 
+/* ---------- course budgets (manual, saved encrypted to GitHub) ---------- */
+function precompute(){
+  const asOf = D.meta.asOf, d7 = addDays(asOf, -6);
+  LIFE = D.campaigns.map(() => ({s:0, s7:0}));
+  for (const [d,ci,,,,s] of D.rows){ LIFE[ci].s += s; if (DAY[d] >= d7 && DAY[d] <= asOf) LIFE[ci].s7 += s; }
+}
+function budgetInfo(c){
+  if (c.brand) return {};
+  const man = BUD[c.key] && BUD[c.key].budget;
+  const budgetName = c.campaigns.reduce((t,ci) => t + (D.campaigns[ci].budget || 0), 0) || null;
+  const cis = man ? c.campaigns : c.campaigns.filter(ci => D.campaigns[ci].budget);
+  const budget = man || budgetName, src = man ? 'manual' : budgetName ? 'name' : null;
+  const spent = cis.reduce((t,ci) => t + LIFE[ci].s, 0), avg7 = cis.reduce((t,ci) => t + LIFE[ci].s7, 0) / 7;
+  const o = {budget, budgetName, budgetSource:src, budgetSpent:spent, budgetAvg7:avg7,
+             expected:null, pace:null, elapsedPct:null, remaining:null, requiredDaily:null, projected:null};
+  if (!budget || !c.start || !c.launch || c.start <= c.launch) return o;
+  const asOf = D.meta.asOf, total = days(c.launch, c.start);
+  const elapsed = Math.max(0, Math.min(days(c.launch, asOf < c.start ? asOf : c.start), total));
+  o.expected = budget * elapsed / total; o.elapsedPct = elapsed / total;
+  o.pace = o.expected ? spent / o.expected : null; o.remaining = budget - spent;
+  if (c.daysLeft > 0){ o.requiredDaily = Math.max(0, budget - spent) / c.daysLeft; o.projected = spent + avg7 * c.daysLeft; }
+  return o;
+}
+function allAlerts(){
+  const PACE = new Set(['under_pace','over_pace','projected_over']);
+  const out = D.alerts.filter(a => !PACE.has(a.type));
+  D.courses.forEach((c,i) => {
+    if (c.brand || c.phase === 'ended') return;
+    const b = budgetInfo(c);
+    if (b.pace != null && b.elapsedPct >= .2){
+      if (b.pace < .8) out.push({sev:'med', type:'under_pace', course:i, value:b.pace,
+        msg:`מתחת לקצב התקציב: הוצא ₪${fmt.int(b.budgetSpent)} מתוך ₪${fmt.int(b.expected)} צפוי (${(b.pace*100).toFixed(0)}%)`});
+      else if (b.pace > 1.15) out.push({sev: (b.projected||0) > b.budget*1.1 ? 'high' : 'med', type:'over_pace', course:i, value:b.pace,
+        msg:`מעל קצב התקציב: הוצא ₪${fmt.int(b.budgetSpent)} מתוך ₪${fmt.int(b.expected)} צפוי (${(b.pace*100).toFixed(0)}%)`});
+    }
+    if (b.projected && b.budget && b.projected > b.budget * 1.1) out.push({sev:'med', type:'projected_over', course:i,
+      msg:`בקצב הנוכחי צפוי לסיים ב-₪${fmt.int(b.projected)} מול תקציב ₪${fmt.int(b.budget)}`});
+  });
+  const r = {high:0, med:1, info:2};
+  return out.sort((x,y) => r[x.sev] - r[y.sev]);
+}
+
+const b64e = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+async function encryptJSON(obj, pw){
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), iter = 310000;
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['encrypt']);
+  const gz = new Uint8Array(await new Response(new Blob([JSON.stringify(obj)]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());
+  const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, gz));
+  return {v:1, kdf:'PBKDF2-SHA256', iter, salt:b64e(salt), iv:b64e(iv), gzip:true, ct:b64e(ct)};
+}
+const W = () => D.meta.write;
+const ghHeaders = () => ({'Authorization':'Bearer ' + W().token, 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28'});
+const ghUrl = () => `https://api.github.com/repos/${W().repo}/contents/${W().path}`;
+async function fetchBudgets(){
+  if (!PW) { try { return {data: JSON.parse(localStorage.getItem('fore-budgets-dev') || '{}'), sha:null}; } catch(e){ return {data:{}, sha:null}; } }
+  if (W()){
+    const r = await fetch(ghUrl() + '?ref=' + W().branch + '&t=' + Date.now(), {headers: ghHeaders(), cache:'no-store'});
+    if (r.status === 404) return {data:{}, sha:null};
+    if (!r.ok) throw new Error('GitHub ' + r.status);
+    const j = await r.json();
+    return {data: (await decrypt(JSON.parse(atob(j.content.replace(/\n/g,''))), PW)).courses || {}, sha: j.sha};
+  }
+  const r = await fetch('budgets.enc.json?v=' + Date.now());
+  if (!r.ok) return {data:{}, sha:null};
+  return {data: (await decrypt(await r.json(), PW)).courses || {}, sha:null};
+}
+async function loadBudgets(){
+  try { const b = await fetchBudgets(); BUD = b.data; BUD_SHA = b.sha; }
+  catch(e){ console.warn(e); toast('לא ניתן לטעון את התקציבים השמורים', true); }
+}
+function toast(msg, err){ const t = $('toast'); t.textContent = msg; t.className = 'toast on' + (err ? ' err' : ''); clearTimeout(t._h); t._h = setTimeout(() => t.className = 'toast', 3200); }
+function editorName(){
+  let n = null; try { n = localStorage.getItem('fore-editor'); } catch(e){}
+  if (!n){ n = (prompt('השם שלך (יופיע ביומן השינויים):') || '').trim() || 'צוות'; try { localStorage.setItem('fore-editor', n); } catch(e){} }
+  return n;
+}
+async function saveBudget(key, raw){
+  const val = String(raw ?? '').replace(/[^\d.]/g, '');
+  const amount = val ? Math.round(parseFloat(val)) : null;
+  const course = D.courses.find(c => c.key === key);
+  const by = editorName(), at = new Date().toISOString();
+  const apply = data => { const d = {...data}; if (amount) d[key] = {budget: amount, by, at}; else delete d[key]; return d; };
+  if (!PW || !W()){
+    BUD = apply(BUD);
+    if (!PW) try { localStorage.setItem('fore-budgets-dev', JSON.stringify(BUD)); } catch(e){}
+    state.editing = null; render();
+    toast(PW ? 'נשמר בדפדפן הזה בלבד – שמירה משותפת עדיין לא הוגדרה' : 'נשמר מקומית (מצב פיתוח)', !!PW); return;
+  }
+  toast('שומר…');
+  for (let attempt = 0; attempt < 3; attempt++){
+    try {
+      const fresh = attempt ? await fetchBudgets() : {data: BUD, sha: BUD_SHA};
+      const next = apply(fresh.data);
+      const enc = await encryptJSON({courses: next, updated: at}, PW);
+      const body = {message: `budget: ${course ? course.name : key} = ${amount ?? 'removed'} (by ${by})`,
+                    content: btoa(JSON.stringify(enc)), branch: W().branch};
+      if (fresh.sha) body.sha = fresh.sha;
+      const r = await fetch(ghUrl(), {method:'PUT', headers: ghHeaders(), body: JSON.stringify(body)});
+      if (r.status === 409 || r.status === 422) continue;          // someone saved meanwhile -> merge & retry
+      if (!r.ok) throw new Error('GitHub ' + r.status);
+      const j = await r.json();
+      BUD = next; BUD_SHA = j.content.sha; state.editing = null; render();
+      toast(amount ? `התקציב נשמר: ₪${fmt.int(amount)}` : 'התקציב הידני נמחק');
+      return;
+    } catch(e){ console.warn(e); toast('השמירה נכשלה – נסו שוב', true); return; }
+  }
+  toast('השמירה נכשלה (התנגשות) – רעננו ונסו שוב', true);
+}
+
 function paceHtml(c){
   if (c.brand) return `<div class="mt"><span>תקציב</span><b>—</b><small>קמפייני מותג ללא תקציב קורס</small></div>`;
-  if (!c.budget) return `<div class="mt"><span>תקציב</span><b>לא הוגדר בשם</b><small>הוצא <span class="num">${fmt.ils(c.spent)}</span>${c.dailySet?` · יומי מוגדר <span class="num">${fmt.ils(c.dailySet)}</span>`:''}</small></div>`;
+  const editBtn = `<button class="bedit" data-edit="${esc(c.key)}" title="עריכת תקציב הקורס">✎ ${c.budget ? 'עריכה' : 'הזנת תקציב'}</button>`;
+  if (state.editing === c.key) return `<div class="mt" data-stop="1"><span>תקציב הקורס (כל הפלטפורמות)</span>
+    <div class="bform"><input type="number" min="0" step="100" id="bIn" value="${BUD[c.key]?.budget ?? c.budgetName ?? ''}" placeholder="₪">
+      <button class="ok" data-save="${esc(c.key)}">שמירה</button><button class="no" data-cancel="1">ביטול</button>
+      ${BUD[c.key] ? `<button class="rm" data-clear="${esc(c.key)}">מחיקה</button>` : ''}</div>
+    <small>${c.budgetName ? `מהשמות: <span class="num">${fmt.ils(c.budgetName)}</span> · ` : ''}תקציב ידני כולל את כל הפלטפורמות</small></div>`;
+  if (!c.budget) return `<div class="mt"><span>תקציב ${editBtn}</span><b>לא הוגדר</b><small>הוצא <span class="num">${fmt.ils(c.spent)}</span>${c.dailySet?` · יומי מוגדר <span class="num">${fmt.ils(c.dailySet)}</span>`:''}</small></div>`;
   const used = c.budgetSpent / c.budget, exp = Math.min(1, c.elapsedPct ?? 1);
   const cls = c.pace==null ? '' : c.pace > 1.15 ? 'bad' : c.pace < .8 && c.phase!=='ended' ? 'warn' : 'good';
   const color = cls==='bad' ? 'var(--bad)' : cls==='warn' ? '#E9B824' : 'var(--good)';
-  return `<div class="mt"><span>תקציב · ניצול</span>
+  const bm = BUD[c.key];
+  const src = c.budgetSource==='manual' ? `<span class="bsrc manual" title="${esc(bm && bm.by ? 'עודכן ע״י ' + bm.by + ' · ' + new Date(bm.at).toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) : '')}">ידני</span>` : `<span class="bsrc name">משם הקמפיין</span>`;
+  return `<div class="mt"><span>תקציב · ניצול ${src} ${editBtn}</span>
     <b class="num">${fmt.ils(c.budgetSpent)}</b> <small style="display:inline">מתוך <span class="num">${fmt.ils(c.budget)}</span></small>
     <div class="pace" title="הקו הכהה = כמה היה צריך לצאת עד היום"><i style="width:${Math.min(100,used*100)}%;background:${color}"></i>${c.phase!=='ended'?`<u style="right:${exp*100}%"></u>`:''}</div>
     <div class="pace-lbl"><span>${(used*100).toFixed(0)}% נוצל</span>${c.pace!=null && c.phase!=='ended'?`<span class="${cls}">קצב ${(c.pace*100).toFixed(0)}%</span>`:''}</div></div>`;
@@ -435,7 +568,7 @@ function renderCourses(cp, inP){
     .map(([k,l]) => `<button class="${f===k?'on':''}" data-k="${k}">${l}<span class="c">${counts[k]}</span></button>`).join('');
   $('courseSeg').querySelectorAll('button').forEach(b => b.onclick = () => { state.courseFilter = b.dataset.k; render(); });
 
-  const list = D.courses.map((c,i) => ({...c, i})).filter(c => f==='all' || (f==='active' ? isActive(c) : !isActive(c)));
+  const list = D.courses.map((c,i) => ({...c, ...budgetInfo(c), i})).filter(c => f==='all' || (f==='active' ? isActive(c) : !isActive(c)));
   // unit totals per period
   const ut = D.units.map(zero);
   for (const [d,ui,i,k,l,s] of D.unitRows) if (inP(d)) add(ut[ui],i,k,l,s);
@@ -460,6 +593,14 @@ function renderCourses(cp, inP){
       </div>
       <div class="cb">${open ? courseBody(c, cp, ut) : ''}</div></div>`;
   }).join('') : `<div class="card empty">אין קורסים בקטגוריה הזו</div>`;
+  const C = $('courses');
+  C.querySelectorAll('[data-edit]').forEach(b => b.onclick = e => { e.stopPropagation(); state.editing = b.dataset.edit; renderCourses(cp, inP);
+    const i = $('bIn'); if (i){ i.focus(); i.select(); } });
+  C.querySelectorAll('[data-stop]').forEach(el => el.onclick = e => e.stopPropagation());
+  C.querySelectorAll('[data-cancel]').forEach(b => b.onclick = e => { e.stopPropagation(); state.editing = null; renderCourses(cp, inP); });
+  C.querySelectorAll('[data-save]').forEach(b => b.onclick = e => { e.stopPropagation(); saveBudget(b.dataset.save, $('bIn').value); });
+  C.querySelectorAll('[data-clear]').forEach(b => b.onclick = e => { e.stopPropagation(); saveBudget(b.dataset.clear, ''); });
+  const bi = $('bIn'); if (bi) bi.onkeydown = e => { if (e.key==='Enter') saveBudget(state.editing, bi.value); if (e.key==='Escape'){ state.editing = null; renderCourses(cp, inP); } };
   $('courses').querySelectorAll('.course .ch').forEach(h => h.onclick = () => {
     const k = h.parentElement.dataset.key; state.open.has(k) ? state.open.delete(k) : state.open.add(k); renderCourses(cp, inP);
   });

@@ -80,7 +80,9 @@ class Index:
         return self.pos[key]
 
 
-def build(client: dict, raw: dict, fx, generated: str) -> dict:
+def build(client: dict, raw: dict, fx, generated: str, budgets: dict = None) -> dict:
+    """budgets: manual course budgets edited in the team page {course_key: {budget, by, at}}."""
+    budgets = budgets or {}
     cfg = CONFIG.get("alerts", {})
     as_of = date.fromisoformat(client["asOf"])
     detail_from = (as_of - timedelta(days=CONFIG.get("detail_days", 120) - 1)).isoformat()
@@ -213,7 +215,12 @@ def build(client: dict, raw: dict, fx, generated: str) -> dict:
         life = window(rows, cis, "0000", iso)
         last7 = window(rows, cis, (as_of - timedelta(days=6)).isoformat(), iso)
         budgeted = {ci for ci in cis if campaigns[ci]["budget"]}
-        budget = sum(campaigns[ci]["budget"] for ci in budgeted) or None
+        name_budget = sum(campaigns[ci]["budget"] for ci in budgeted) or None
+        manual = (budgets.get(key) or {}).get("budget")
+        if manual:                      # manual course budget covers every platform of the course
+            budgeted, budget, source = set(cis), float(manual), "manual"
+        else:
+            budget, source = name_budget, ("name" if name_budget else None)
         b_life = window(rows, budgeted, "0000", iso)          # pacing compares only campaigns that carry a budget
         b_last7 = window(rows, budgeted, (as_of - timedelta(days=6)).isoformat(), iso)
         live_cis = [ci for ci in cis if campaigns[ci]["status"] == "live"]
@@ -221,7 +228,7 @@ def build(client: dict, raw: dict, fx, generated: str) -> dict:
              "start": c["start"].isoformat() if c["start"] else None,
              "launch": c["launch"].isoformat() if c["launch"] else None,
              "campaigns": sorted(cis), "live": len(live_cis),
-             "budget": budget, "budgetMissing": sorted({campaigns[ci]["p"] for ci in cis if not campaigns[ci]["budget"]
+             "budget": budget, "budgetSource": source, "budgetName": name_budget, "budgetMissing": sorted({campaigns[ci]["p"] for ci in cis if not campaigns[ci]["budget"]
                                                         and campaigns[ci]["type"] in LEAD_TYPES}),
              "dailySet": round(sum(campaigns[ci]["daily"] or 0 for ci in live_cis), 0) or None,
              "spent": round(life["s"], 2), "leads": life["l"], "budgetSpent": round(b_life["s"], 2),

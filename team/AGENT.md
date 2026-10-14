@@ -24,6 +24,13 @@ The campaigners dashboard (`team/index.html`) and any future client agent read t
 | `reach` | Reach per preset period, per platform and per campaign |
 | `alerts[]` | `sev` (high/med/info), `type, msg` (Hebrew), `p, campaign, course, value` |
 
+## Manual course budgets
+- `team/budgets.enc.json` uses the same encryption. Inside: `{courses: {course_key: {budget, by, at}}, updated}`.
+- Campaigners edit it from the team page. Each save is a commit with the editor's name, so `git log team/budgets.enc.json` is the change log.
+- A manual budget replaces the budgets in the campaign names. It covers every platform of the course, Google included.
+- In the payload: `courses[].budgetSource` (manual / name), `budgetName` (the sum from the names).
+- Saving from the page uses `meta.write` (a token restricted to this repo), which comes from secret TEAM_WRITE_TOKEN.
+
 ## Definitions
 - Leads: Meta counts instant-form leads only (`actions_onsite_conversion_lead_grouped`). LinkedIn counts Lead Gen Form leads (`oneclickleads`). Google counts conversions.
 - LinkedIn spend comes in USD and is converted to ILS at the daily ECB rate.
