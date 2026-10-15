@@ -2,8 +2,9 @@ name: Update dashboard data
 
 on:
   schedule:
-    - cron: "15 3 * * *"   # daily ~06:15 Israel time
-    - cron: "15 9 * * *"   # midday refresh (late Meta/Google attribution)
+    # GitHub may delay or drop scheduled runs, so run several times a day (Israel time ≈ UTC+3):
+    # ~04:07, 06:07, 08:07, 10:07, 13:07, 17:07, 21:07. Odd minute = less load = fewer dropped runs.
+    - cron: "7 1,3,5,7,10,14,18 * * *"
   workflow_dispatch:
 
 permissions:

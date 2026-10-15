@@ -354,6 +354,9 @@ async function start(d){
   D = d; DAY = d.days;
   $('gate').classList.add('hide'); $('app').hidden = false;
   $('asOf').textContent = fmt.date(d.meta.asOf);
+  const ilToday = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Jerusalem'}).format(new Date());
+  const lag = days(d.meta.asOf, ilToday) - 2;      // 0 = up to yesterday, as expected
+  if (lag > 0) $('asOf').insertAdjacentHTML('afterend', ` <span style="color:#FBDD5C;font-weight:700">⚠ הנתונים בפיגור של ${lag} ${lag===1?'יום':'ימים'} – העדכון האוטומטי לא רץ</span>`);
   $('updated').textContent = new Date(d.meta.generated).toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'});
   $('detailFrom').textContent = fmt.date(d.meta.detailFrom);
   const w = d.meta.write;
@@ -502,7 +505,13 @@ function editorName(){
   if (!n){ n = (prompt('השם שלך (יופיע ביומן השינויים):') || '').trim() || 'צוות'; try { localStorage.setItem('fore-editor', n); } catch(e){} }
   return n;
 }
+let SAVING = false;
 async function saveBudget(key, raw){
+  if (SAVING) return;          // Enter + click, or double click, must not save twice
+  SAVING = true;
+  try { await saveBudgetOnce(key, raw); } finally { SAVING = false; }
+}
+async function saveBudgetOnce(key, raw){
   const val = String(raw ?? '').replace(/[^\d.]/g, '');
   const amount = val ? Math.round(parseFloat(val)) : null;
   const course = D.courses.find(c => c.key === key);

@@ -510,6 +510,9 @@ function setKey(k){
 fetch('data.json?v=' + Date.now()).then(r => r.json()).then(d => {
   DATA = d;
   document.getElementById('asOf').textContent = fmt.date(d.asOf);
+  // Expected: data up to yesterday (Israel time). If older, say so instead of silently showing old numbers.
+  const ilToday = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Jerusalem'}).format(new Date());
+  if (d.asOf < addDays(ilToday, -1)) document.getElementById('asOf').insertAdjacentHTML('afterend', ' <span style="color:#FBDD5C">· העדכון הבא בדרך</span>');
   document.getElementById('updated').textContent = new Date(d.updated).toLocaleString('he-IL',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'});
   const first = d.rows.length ? d.rows[0].d : d.asOf;
   for (const el of [from,to]){ el.min = first; el.max = d.asOf; }
